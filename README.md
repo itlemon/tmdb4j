@@ -1,2 +1,2 @@
 # tmdb4j
-tmdb-java is an inofficial wrapper around the TMDB v3 API using retrofit 2.
+tmdb4j is a non-profit, unofficial Java client for the TMDB API.
