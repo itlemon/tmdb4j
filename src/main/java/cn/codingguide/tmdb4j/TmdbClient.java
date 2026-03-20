@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import cn.codingguide.tmdb4j.api.AccountApi;
 import cn.codingguide.tmdb4j.api.AuthenticationApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
+import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.interceptor.ApiKeyInterceptor;
 import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
 import cn.codingguide.tmdb4j.model.BaseResponse;
@@ -14,8 +15,6 @@ import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -43,7 +42,7 @@ public class TmdbClient {
 
         // 构建 OkHttpClient
         OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder()
-                .addInterceptor(new ApiKeyInterceptor(builder.apiKey))
+                .addInterceptor(new ApiKeyInterceptor(builder.apiKey, builder.bearerToken, builder.authMethod))
                 .addInterceptor(new SessionInterceptor(sessionStore, sessionKeyProvider))
                 .connectTimeout(builder.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(builder.readTimeout, TimeUnit.SECONDS);
@@ -120,9 +119,10 @@ public class TmdbClient {
 
     public static class Builder {
 
-        private static final Logger log = LoggerFactory.getLogger(Builder.class);
-
         private final String apiKey;
+        private String bearerToken;
+        // 默认使用 Bearer Token
+        private AuthMethod authMethod;
         private String baseUrl = "https://api.themoviedb.org/3/";
         private long connectTimeout = 30;
         private long readTimeout = 30;
@@ -130,8 +130,21 @@ public class TmdbClient {
         private SessionKeyProvider sessionKeyProvider;
         private okhttp3.Interceptor loggingInterceptor;
 
+        /**
+         * 使用 API Key 方式（旧方式，不推荐）
+         */
         public Builder(String apiKey) {
             this.apiKey = apiKey;
+            this.authMethod = AuthMethod.API_KEY_QUERY;
+        }
+
+        /**
+         * 使用 Bearer Token 方式（推荐）
+         */
+        public Builder withBearerToken(String bearerToken) {
+            this.bearerToken = bearerToken;
+            this.authMethod = AuthMethod.BEARER_TOKEN;
+            return this;
         }
 
         public Builder baseUrl(String baseUrl) {
@@ -165,8 +178,12 @@ public class TmdbClient {
         }
 
         public TmdbClient build() {
-            if (StrUtil.isBlank(apiKey)) {
-                throw new IllegalArgumentException("API Key is required");
+            // 验证认证信息
+            if (authMethod == AuthMethod.BEARER_TOKEN && StrUtil.isBlank(bearerToken)) {
+                throw new IllegalArgumentException("Bearer token is required when using BEARER_TOKEN auth");
+            }
+            if (authMethod == AuthMethod.API_KEY_QUERY && StrUtil.isBlank(apiKey)) {
+                throw new IllegalArgumentException("API Key is required when using API_KEY_QUERY auth");
             }
             if (StrUtil.isBlank(baseUrl)) {
                 throw new IllegalArgumentException("Base Url is required");
