@@ -9,8 +9,6 @@ import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.interceptor.ApiKeyInterceptor;
 import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
 import cn.codingguide.tmdb4j.model.BaseResponse;
-import cn.codingguide.tmdb4j.session.DefaultSessionKeyProvider;
-import cn.codingguide.tmdb4j.session.InMemorySessionStore;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
@@ -177,14 +175,10 @@ public class TmdbClient {
                 throw new IllegalArgumentException("Connect Timeout or Read Timeout is required");
             }
             if (sessionStore == null) {
-                log.warn("Warning: No SessionStore provided, using InMemorySessionStore. For production clusters, use" +
-                        " RedisSessionStore or other distributed store.");
-                sessionStore = new InMemorySessionStore();
+                throw new IllegalArgumentException("SessionStore must be provided");
             }
             if (sessionKeyProvider == null) {
-                log.warn("Warning: No SessionKeyProvider provided, using default fixed key. This will cause all users" +
-                        " to share the same session.");
-                sessionKeyProvider = new DefaultSessionKeyProvider(() -> "default_user");
+                throw new IllegalArgumentException("SessionKeyProvider must be provided");
             }
             return new TmdbClient(this);
         }
