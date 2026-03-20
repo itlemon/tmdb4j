@@ -1,7 +1,7 @@
 package cn.codingguide.tmdb4j.exception;
 
 /**
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public class TmdbException extends RuntimeException {

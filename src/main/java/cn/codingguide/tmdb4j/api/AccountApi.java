@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public interface AccountApi {

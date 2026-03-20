@@ -9,11 +9,15 @@ import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.interceptor.ApiKeyInterceptor;
 import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
 import cn.codingguide.tmdb4j.model.BaseResponse;
+import cn.codingguide.tmdb4j.session.DefaultSessionKeyProvider;
+import cn.codingguide.tmdb4j.session.InMemorySessionStore;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * 主入口，构建 Retrofit 实例
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public class TmdbClient {
@@ -117,6 +121,9 @@ public class TmdbClient {
     }
 
     public static class Builder {
+
+        private static final Logger log = LoggerFactory.getLogger(Builder.class);
+
         private final String apiKey;
         private String baseUrl = "https://api.themoviedb.org/3/";
         private long connectTimeout = 30;
@@ -170,10 +177,14 @@ public class TmdbClient {
                 throw new IllegalArgumentException("Connect Timeout or Read Timeout is required");
             }
             if (sessionStore == null) {
-                throw new IllegalArgumentException("SessionStore must be provided");
+                log.warn("Warning: No SessionStore provided, using InMemorySessionStore. For production clusters, use" +
+                        " RedisSessionStore or other distributed store.");
+                sessionStore = new InMemorySessionStore();
             }
             if (sessionKeyProvider == null) {
-                throw new IllegalArgumentException("SessionKeyProvider must be provided");
+                log.warn("Warning: No SessionKeyProvider provided, using default fixed key. This will cause all users" +
+                        " to share the same session.");
+                sessionKeyProvider = new DefaultSessionKeyProvider(() -> "default_user");
             }
             return new TmdbClient(this);
         }

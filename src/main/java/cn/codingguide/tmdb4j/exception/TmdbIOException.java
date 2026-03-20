@@ -3,7 +3,7 @@ package cn.codingguide.tmdb4j.exception;
 /**
  * 网络/IO 异常
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public class TmdbIOException extends TmdbException {

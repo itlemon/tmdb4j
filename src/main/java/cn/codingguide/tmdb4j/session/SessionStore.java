@@ -3,7 +3,7 @@ package cn.codingguide.tmdb4j.session;
 /**
  * 会话存储接口
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public interface SessionStore {

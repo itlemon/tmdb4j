@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 /**
  * 默认实现（基于用户ID）
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public class DefaultSessionKeyProvider implements SessionKeyProvider {

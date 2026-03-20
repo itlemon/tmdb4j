@@ -8,7 +8,7 @@ import lombok.ToString;
 /**
  * 游客会话
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 @Getter

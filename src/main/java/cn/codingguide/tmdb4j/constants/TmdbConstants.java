@@ -1,7 +1,7 @@
 package cn.codingguide.tmdb4j.constants;
 
 /**
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 public class TmdbConstants {

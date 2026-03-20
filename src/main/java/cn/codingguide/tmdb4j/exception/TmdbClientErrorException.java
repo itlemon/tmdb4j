@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 客户端错误（4xx） - 包含 TMDB 业务错误码
  *
- * @author itlemon <itlemon@petalmail.com>
+ * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
 @Getter
