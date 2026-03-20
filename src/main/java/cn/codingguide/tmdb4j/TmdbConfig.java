@@ -1,12 +1,12 @@
 package cn.codingguide.tmdb4j;
 
 /**
- * Builder模式构建客户端
+ * 配置类
  *
  * @author itlemon <itlemon@petalmail.com>
- * Created on 2026-03-14
+ * Created on 2026-03-20
  */
-public class TmdbClientBuilder {
+public class TmdbConfig {
 
 
 }
