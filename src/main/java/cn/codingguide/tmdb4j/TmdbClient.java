@@ -86,20 +86,19 @@ public class TmdbClient {
      * @param password TMDB 密码
      * @return sessionId
      */
-    public String login(String username, String password) throws TmdbException {
+    public String loginAndSaveSession(String username, String password) throws TmdbException {
         // 1. 创建请求令牌
-        RequestTokenResponse tokenRes = executeSync(authenticationApi.createRequestToken());
+        RequestTokenResponse tokenRes = createRequestToken();
         if (!tokenRes.isSuccess()) {
             throw new TmdbApiException("Failed to create request token");
         }
         // 2. 用户验证
-        LoginRequest loginReq = new LoginRequest(username, password, tokenRes.getRequestToken());
-        RequestTokenResponse validated = executeSync(authenticationApi.validateWithLogin(loginReq));
+        RequestTokenResponse validated = validateWithLogin(username, password, tokenRes.getRequestToken());
         if (!validated.isSuccess()) {
             throw new TmdbApiException("Invalid username or password");
         }
         // 3. 创建会话
-        SessionResponse sessionRes = executeSync(authenticationApi.createSession(validated.getRequestToken()));
+        SessionResponse sessionRes = createSession(validated.getRequestToken());
         if (!sessionRes.isSuccess()) {
             throw new TmdbApiException("Failed to create session");
         }
@@ -114,8 +113,8 @@ public class TmdbClient {
      *
      * @return guestSessionId
      */
-    public String createGuestSession() throws TmdbException {
-        GuestSessionResponse response = executeSync(authenticationApi.createGuestSession());
+    public String createAndSaveGuestSession() throws TmdbException {
+        GuestSessionResponse response = createGuestSession();
         if (!response.isSuccess()) {
             throw new TmdbApiException("Failed to create guest session");
         }
@@ -160,11 +159,11 @@ public class TmdbClient {
     /**
      * 登出：清除本地会话，并可选地通知 TMDB 删除远程会话。
      */
-    public void logout() throws TmdbException {
+    public void logoutAndDeleteSession() throws TmdbException {
         String sessionId = getCurrentSessionId();
         if (StrUtil.isNotBlank(sessionId)) {
             try {
-                executeSync(authenticationApi.deleteSession(sessionId));
+                deleteSession(sessionId);
             } catch (Exception e) {
                 // 远程删除失败不影响本地清除，可记录日志
             }
@@ -174,7 +173,25 @@ public class TmdbClient {
 
     // ==================== API 封装 ====================
     // ==================== 认证相关接口 ====================
+    public RequestTokenResponse createRequestToken() throws TmdbException {
+        return executeSync(authenticationApi.createRequestToken());
+    }
 
+    public RequestTokenResponse validateWithLogin(String username, String password, String requestToken) throws TmdbException {
+        return executeSync(authenticationApi.validateWithLogin(new LoginRequest(username, password, requestToken)));
+    }
+
+    public SessionResponse createSession(String requestToken) throws TmdbException {
+        return executeSync(authenticationApi.createSession(requestToken));
+    }
+
+    public void deleteSession(String sessionId) throws TmdbException {
+        executeSync(authenticationApi.deleteSession(sessionId));
+    }
+
+    public GuestSessionResponse createGuestSession() throws TmdbException {
+        return executeSync(authenticationApi.createGuestSession());
+    }
 
 
     public Movie getMovieDetails(int movieId) throws TmdbException {

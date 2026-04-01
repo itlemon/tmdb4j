@@ -18,18 +18,23 @@ import retrofit2.http.Query;
  */
 public interface AuthenticationApi {
 
+    // https://developer.themoviedb.org/reference/authentication-create-request-token
     @GET("authentication/token/new")
     Call<RequestTokenResponse> createRequestToken();
 
+    // https://developer.themoviedb.org/reference/authentication-create-session-from-login
     @POST("authentication/token/validate_with_login")
     Call<RequestTokenResponse> validateWithLogin(@Body LoginRequest loginRequest);
 
+    // https://developer.themoviedb.org/reference/authentication-create-session
     @POST("authentication/session/new")
     Call<SessionResponse> createSession(@Query("request_token") String requestToken);
 
+    // https://developer.themoviedb.org/reference/authentication-delete-session
     @DELETE("authentication/session")
     Call<BaseResponse> deleteSession(@Query("session_id") String sessionId);
 
+    // https://developer.themoviedb.org/reference/authentication-create-guest-session
     @GET("authentication/guest_session/new")
     Call<GuestSessionResponse> createGuestSession();
 
