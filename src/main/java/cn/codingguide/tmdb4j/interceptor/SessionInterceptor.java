@@ -68,8 +68,6 @@ public class SessionInterceptor implements Interceptor {
 
         // 检查 HTTP 状态码表示会话失效（401 Unauthorized 或 403 Forbidden）
         if (response.code() == HTTP_UNAUTHORIZED || response.code() == HTTP_FORBIDDEN) {
-            // 清除本地失效会话
-            sessionStore.remove(sessionKey);
             // 关闭响应体避免资源泄漏
             response.close();
             throw new TmdbSessionException("Session expired, please re-authenticate");

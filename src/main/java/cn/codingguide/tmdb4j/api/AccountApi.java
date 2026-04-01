@@ -1,5 +1,6 @@
 package cn.codingguide.tmdb4j.api;
 
+import cn.codingguide.tmdb4j.annotation.RequiresSession;
 import cn.codingguide.tmdb4j.model.Account;
 import cn.codingguide.tmdb4j.model.BaseResponse;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
@@ -16,6 +17,7 @@ import retrofit2.http.Query;
  * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-03-20
  */
+@RequiresSession
 public interface AccountApi {
 
     @GET("account")

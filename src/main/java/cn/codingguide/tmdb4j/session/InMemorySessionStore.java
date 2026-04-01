@@ -14,17 +14,17 @@ public class InMemorySessionStore implements SessionStore {
     private final ConcurrentHashMap<String, String> store = new ConcurrentHashMap<>();
 
     @Override
-    public void save(String key, String sessionId) {
-        store.put(key, sessionId);
+    public void save(String sessionKey, String sessionId) {
+        store.put(sessionKey, sessionId);
     }
 
     @Override
-    public String get(String key) {
-        return store.get(key);
+    public String get(String sessionKey) {
+        return store.get(sessionKey);
     }
 
     @Override
-    public void remove(String key) {
-        store.remove(key);
+    public void remove(String sessionKey) {
+        store.remove(sessionKey);
     }
 }

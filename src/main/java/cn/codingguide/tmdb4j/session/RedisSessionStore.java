@@ -44,22 +44,22 @@ public class RedisSessionStore implements SessionStore, Closeable {
     }
 
     @Override
-    public void save(String key, String sessionId) {
+    public void save(String sessionKey, String sessionId) {
         if (expireSeconds > 0) {
-            sync.setex(key, expireSeconds, sessionId);
+            sync.setex(sessionKey, expireSeconds, sessionId);
         } else {
-            sync.set(key, sessionId);
+            sync.set(sessionKey, sessionId);
         }
     }
 
     @Override
-    public String get(String key) {
-        return sync.get(key);
+    public String get(String sessionKey) {
+        return sync.get(sessionKey);
     }
 
     @Override
-    public void remove(String key) {
-        sync.del(key);
+    public void remove(String sessionKey) {
+        sync.del(sessionKey);
     }
 
     /**

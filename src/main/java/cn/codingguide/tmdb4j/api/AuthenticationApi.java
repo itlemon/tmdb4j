@@ -1,6 +1,7 @@
 package cn.codingguide.tmdb4j.api;
 
 import cn.codingguide.tmdb4j.model.BaseResponse;
+import cn.codingguide.tmdb4j.model.GuestSessionResponse;
 import cn.codingguide.tmdb4j.model.LoginRequest;
 import cn.codingguide.tmdb4j.model.RequestTokenResponse;
 import cn.codingguide.tmdb4j.model.SessionResponse;
@@ -28,5 +29,8 @@ public interface AuthenticationApi {
 
     @DELETE("authentication/session")
     Call<BaseResponse> deleteSession(@Query("session_id") String sessionId);
+
+    @GET("authentication/guest_session/new")
+    Call<GuestSessionResponse> createGuestSession();
 
 }

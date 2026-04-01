@@ -7,16 +7,16 @@ import lombok.Getter;
  * Created on 2026-03-20
  */
 @Getter
-public abstract class TmdbHttpException extends TmdbException {
+public class TmdbHttpException extends TmdbException {
 
     private final int httpStatusCode;
 
-    protected TmdbHttpException(String message, int httpStatusCode) {
+    public TmdbHttpException(String message, int httpStatusCode) {
         super(message);
         this.httpStatusCode = httpStatusCode;
     }
 
-    protected TmdbHttpException(String message, int httpStatusCode, Throwable cause) {
+    public TmdbHttpException(String message, int httpStatusCode, Throwable cause) {
         super(message, cause);
         this.httpStatusCode = httpStatusCode;
     }
