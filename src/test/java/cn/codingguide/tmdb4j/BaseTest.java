@@ -19,6 +19,7 @@ public class BaseTest {
                 .sessionKeyProvider(new DefaultSessionKeyProvider(() -> "test"))
                 .build();
         // 用于测试的正式会话ID
+        System.out.println(System.getenv("SESSION_ID"));
         tmdbClient.saveSession(System.getenv("SESSION_ID"));
     }
 
