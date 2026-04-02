@@ -14,12 +14,12 @@ public class BaseTest {
 
     @BeforeAll
     public static void tmdbClient() {
-        tmdbClient = new TmdbClient.Builder(System.getProperty("API_KEY"))
+        tmdbClient = new TmdbClient.Builder(System.getenv("API_KEY"))
                 .sessionStore(new InMemorySessionStore())
                 .sessionKeyProvider(new DefaultSessionKeyProvider(() -> "test"))
                 .build();
-        // 用于测试的正式会话ID：0ebf5a5afef716d80da6f7f271bd3136c5e3c35a
-        tmdbClient.saveSession("0ebf5a5afef716d80da6f7f271bd3136c5e3c35a");
+        // 用于测试的正式会话ID
+        tmdbClient.saveSession(System.getenv("SESSION_ID"));
     }
 
 }
