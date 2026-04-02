@@ -6,6 +6,7 @@ import cn.codingguide.tmdb4j.model.BaseResponse;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.MovieResults;
 import cn.codingguide.tmdb4j.model.RatingRequest;
+import cn.codingguide.tmdb4j.model.WatchlistRequest;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -20,19 +21,22 @@ import retrofit2.http.Query;
 @RequiresSession
 public interface AccountApi {
 
-    @GET("account")
-    Call<Account> getAccountDetails();
+    // https://developer.themoviedb.org/reference/account-details
+    @GET("account/{account_id}")
+    Call<Account> getAccountDetails(@Path("account_id") int accountId);
+
+    // https://developer.themoviedb.org/reference/account-add-favorite
+    @POST("account/{account_id}/favorite")
+    Call<BaseResponse> addFavorite(@Path("account_id") int accountId, @Body FavoriteRequest request);
+
+    // https://developer.themoviedb.org/reference/account-add-to-watchlist
+    @POST("account/{account_id}/watchlist")
+    Call<BaseResponse> addToWatchlist(@Path("account_id") int accountId, @Body WatchlistRequest request);
 
     @GET("account/{account_id}/favorite/movies")
     Call<MovieResults> getFavoriteMovies(
             @Path("account_id") int accountId,
             @Query("page") int page
-    );
-
-    @POST("account/{account_id}/favorite")
-    Call<BaseResponse> markAsFavorite(
-            @Path("account_id") int accountId,
-            @Body FavoriteRequest request
     );
 
     @POST("movie/{movie_id}/rating")

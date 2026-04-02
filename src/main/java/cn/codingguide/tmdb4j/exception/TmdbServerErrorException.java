@@ -12,4 +12,8 @@ public class TmdbServerErrorException extends TmdbHttpException {
         super(message, httpStatusCode);
     }
 
+    public TmdbServerErrorException(String message, int httpStatusCode, Throwable cause) {
+        super(message, httpStatusCode, cause);
+    }
+
 }

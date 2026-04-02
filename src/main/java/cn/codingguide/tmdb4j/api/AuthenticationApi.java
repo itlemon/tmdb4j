@@ -38,4 +38,7 @@ public interface AuthenticationApi {
     @GET("authentication/guest_session/new")
     Call<GuestSessionResponse> createGuestSession();
 
+    // https://developer.themoviedb.org/reference/authentication-validate-key
+    @GET("authentication")
+    Call<BaseResponse> validateKey();
 }

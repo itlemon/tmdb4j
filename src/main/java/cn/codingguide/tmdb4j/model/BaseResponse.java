@@ -14,6 +14,6 @@ import lombok.ToString;
 public class BaseResponse {
 
     private boolean success;
-    private int statusCode;
+    private Integer statusCode;
     private String statusMessage;
 }

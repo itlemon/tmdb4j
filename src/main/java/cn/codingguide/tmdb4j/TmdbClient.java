@@ -8,18 +8,22 @@ import cn.codingguide.tmdb4j.api.AuthenticationApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.exception.TmdbApiException;
+import cn.codingguide.tmdb4j.exception.TmdbClientErrorException;
 import cn.codingguide.tmdb4j.exception.TmdbException;
-import cn.codingguide.tmdb4j.exception.TmdbHttpException;
 import cn.codingguide.tmdb4j.exception.TmdbIOException;
 import cn.codingguide.tmdb4j.exception.TmdbSessionException;
 import cn.codingguide.tmdb4j.interceptor.ApiKeyInterceptor;
 import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
+import cn.codingguide.tmdb4j.interceptor.TmdbResponseInterceptor;
 import cn.codingguide.tmdb4j.model.Account;
+import cn.codingguide.tmdb4j.model.BaseResponse;
+import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.GuestSessionResponse;
 import cn.codingguide.tmdb4j.model.LoginRequest;
 import cn.codingguide.tmdb4j.model.Movie;
 import cn.codingguide.tmdb4j.model.RequestTokenResponse;
 import cn.codingguide.tmdb4j.model.SessionResponse;
+import cn.codingguide.tmdb4j.model.WatchlistRequest;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
@@ -38,9 +42,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class TmdbClient {
 
-    private final MoviesApi moviesApi;
     private final AccountApi accountApi;
     private final AuthenticationApi authenticationApi;
+    private final MoviesApi moviesApi;
 
     @Getter
     private final SessionStore sessionStore;
@@ -55,6 +59,7 @@ public class TmdbClient {
         OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder()
                 .addInterceptor(new ApiKeyInterceptor(builder.apiKey, builder.bearerToken, builder.authMethod))
                 .addInterceptor(new SessionInterceptor(sessionStore, sessionKeyProvider))
+                .addInterceptor(new TmdbResponseInterceptor())
                 .connectTimeout(builder.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(builder.readTimeout, TimeUnit.SECONDS);
 
@@ -72,9 +77,10 @@ public class TmdbClient {
                 .build();
 
         // 创建 API 实例
-        this.moviesApi = retrofit.create(MoviesApi.class);
         this.accountApi = retrofit.create(AccountApi.class);
         this.authenticationApi = retrofit.create(AuthenticationApi.class);
+
+        this.moviesApi = retrofit.create(MoviesApi.class);
     }
 
     // ==================== 会话管理接口 ====================
@@ -185,12 +191,29 @@ public class TmdbClient {
         return executeSync(authenticationApi.createSession(requestToken));
     }
 
-    public void deleteSession(String sessionId) throws TmdbException {
-        executeSync(authenticationApi.deleteSession(sessionId));
+    public BaseResponse deleteSession(String sessionId) throws TmdbException {
+        return executeSync(authenticationApi.deleteSession(sessionId));
     }
 
     public GuestSessionResponse createGuestSession() throws TmdbException {
         return executeSync(authenticationApi.createGuestSession());
+    }
+
+    public BaseResponse validateKey() throws TmdbException {
+        return executeSync(authenticationApi.validateKey());
+    }
+
+    // ==================== 账户相关接口 ====================
+    public Account getAccountDetails(int accountId) throws TmdbException {
+        return executeSync(accountApi.getAccountDetails(accountId));
+    }
+
+    public BaseResponse addFavorite(int accountId, FavoriteRequest request) throws TmdbException {
+        return executeSync(accountApi.addFavorite(accountId, request));
+    }
+
+    public BaseResponse addToWatchlist(int accountId, WatchlistRequest request) throws TmdbException {
+        return executeSync(accountApi.addToWatchlist(accountId, request));
     }
 
 
@@ -198,9 +221,6 @@ public class TmdbClient {
         return executeSync(moviesApi.getDetails(movieId));
     }
 
-    public Account getAccountDetails() throws TmdbException {
-        return executeSync(accountApi.getAccountDetails());
-    }
 
     // ==================== 内部同步执行器 ====================
     private <T> T executeSync(Call<T> call) throws TmdbException {
@@ -209,8 +229,8 @@ public class TmdbClient {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                String errorBody = response.errorBody() != null ? response.errorBody().string() : StrUtil.EMPTY;
-                throw new TmdbHttpException("HTTP error: " + errorBody, response.code());
+                // 这里实际上已经被拦截器处理了，不会走到这
+                throw new TmdbClientErrorException("Unexpected error", response.code(), 0, StrUtil.EMPTY);
             }
         } catch (IOException e) {
             throw new TmdbIOException("Network error", e);
