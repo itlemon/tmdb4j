@@ -5,8 +5,11 @@ import java.util.concurrent.TimeUnit;
 
 import cn.codingguide.tmdb4j.api.AccountApi;
 import cn.codingguide.tmdb4j.api.AuthenticationApi;
+import cn.codingguide.tmdb4j.api.CertificationApi;
+import cn.codingguide.tmdb4j.api.ChangesApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
+import cn.codingguide.tmdb4j.constants.SortBy;
 import cn.codingguide.tmdb4j.exception.TmdbApiException;
 import cn.codingguide.tmdb4j.exception.TmdbClientErrorException;
 import cn.codingguide.tmdb4j.exception.TmdbException;
@@ -17,12 +20,20 @@ import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
 import cn.codingguide.tmdb4j.interceptor.TmdbResponseInterceptor;
 import cn.codingguide.tmdb4j.model.Account;
 import cn.codingguide.tmdb4j.model.BaseResponse;
+import cn.codingguide.tmdb4j.model.CertificationResponse;
+import cn.codingguide.tmdb4j.model.ChangedMovie;
+import cn.codingguide.tmdb4j.model.CustomList;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.GuestSessionResponse;
 import cn.codingguide.tmdb4j.model.LoginRequest;
 import cn.codingguide.tmdb4j.model.Movie;
+import cn.codingguide.tmdb4j.model.PagedResults;
+import cn.codingguide.tmdb4j.model.RatedMovie;
+import cn.codingguide.tmdb4j.model.RatedTvEpisode;
+import cn.codingguide.tmdb4j.model.RatedTvSeries;
 import cn.codingguide.tmdb4j.model.RequestTokenResponse;
 import cn.codingguide.tmdb4j.model.SessionResponse;
+import cn.codingguide.tmdb4j.model.TvSeries;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
@@ -44,6 +55,9 @@ public class TmdbClient {
 
     private final AccountApi accountApi;
     private final AuthenticationApi authenticationApi;
+    private final CertificationApi certificationApi;
+    private final ChangesApi changesApi;
+
     private final MoviesApi moviesApi;
 
     @Getter
@@ -79,6 +93,8 @@ public class TmdbClient {
         // 创建 API 实例
         this.accountApi = retrofit.create(AccountApi.class);
         this.authenticationApi = retrofit.create(AuthenticationApi.class);
+        this.certificationApi = retrofit.create(CertificationApi.class);
+        this.changesApi = retrofit.create(ChangesApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -204,6 +220,14 @@ public class TmdbClient {
     }
 
     // ==================== 账户相关接口 ====================
+
+    /**
+     * Get the public details of an account on TMDB.
+     *
+     * @param accountId AccountID
+     * @return The public details of an account on TMDB.
+     * @throws TmdbException
+     */
     public Account getAccountDetails(int accountId) throws TmdbException {
         return executeSync(accountApi.getAccountDetails(accountId));
     }
@@ -214,6 +238,61 @@ public class TmdbClient {
 
     public BaseResponse addToWatchlist(int accountId, WatchlistRequest request) throws TmdbException {
         return executeSync(accountApi.addToWatchlist(accountId, request));
+    }
+
+    public PagedResults<Movie> getFavoriteMovies(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getFavoriteMovies(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<TvSeries> getFavoriteTvs(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getFavoriteTvs(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<CustomList> getCustomLists(int accountId, int page) throws TmdbException {
+        return executeSync(accountApi.getCustomLists(accountId, page));
+    }
+
+    public PagedResults<RatedMovie> getRatedMovies(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getRatedMovies(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<RatedTvSeries> getRatedTvSeries(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getRatedTvSeries(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<RatedTvEpisode> getRatedTvEpisodes(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getRatedTvEpisodes(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<Movie> getWatchlistMovies(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getWatchlistMovies(accountId, language, page, sortBy.getValue()));
+    }
+
+    public PagedResults<TvSeries> getWatchlistTvs(int accountId, String language, int page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getWatchlistTvs(accountId, language, page, sortBy.getValue()));
+    }
+
+    // ==================== 电影、电视分级相关接口 ====================
+    public CertificationResponse getMovieCertifications() throws TmdbException {
+        return executeSync(certificationApi.getMovieCertifications());
+    }
+
+    public CertificationResponse getTvCertifications() throws TmdbException {
+        return executeSync(certificationApi.getTvCertifications());
+    }
+
+    // ==================== 电影、电视、人物信息变更列表相关接口 ====================
+
+    /**
+     * You can query this method up to 14 days at a time. Use the start_date and end_date query parameters. 100 items
+     * are returned per page.
+     *
+     * @param page      页码，最小值为 1。
+     * @param startDate 筛选变更的起始日期，格式为 YYYY-MM-DD。
+     * @param endDate   筛选变更的结束日期，格式为 YYYY-MM-DD。
+     */
+    public PagedResults<ChangedMovie> getMovieChanges(int page, String startDate, String endDate) throws TmdbException {
+        return executeSync(changesApi.getMovieChanges(page, startDate, endDate));
     }
 
 

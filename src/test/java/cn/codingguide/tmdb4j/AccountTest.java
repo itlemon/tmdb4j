@@ -1,6 +1,7 @@
 package cn.codingguide.tmdb4j;
 
 import cn.codingguide.tmdb4j.constants.MediaType;
+import cn.codingguide.tmdb4j.constants.SortBy;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.Test;
  * Created on 2026-04-01
  */
 public class AccountTest extends BaseTest {
-
-    private static final int accountId = 21839768;
 
     @Test
     public void getAccountDetails() {
@@ -26,6 +25,21 @@ public class AccountTest extends BaseTest {
     @Test
     public void addToWatchlist() {
         System.out.println(tmdbClient.addToWatchlist(accountId, new WatchlistRequest(MediaType.movie, 83533, true)));
+    }
+
+    @Test
+    public void getFavoriteMovies() {
+        System.out.println(tmdbClient.getFavoriteMovies(accountId, "en-US", 1, SortBy.CREATED_AT_ASC));
+    }
+
+    @Test
+    public void getFavoriteTvs() {
+        System.out.println(tmdbClient.getFavoriteTvs(accountId, "en-US", 1, SortBy.CREATED_AT_ASC));
+    }
+
+    @Test
+    public void getCustomLists() {
+        System.out.println(tmdbClient.getCustomLists(accountId, 1));
     }
 
 }

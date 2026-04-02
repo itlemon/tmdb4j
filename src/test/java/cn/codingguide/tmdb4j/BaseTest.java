@@ -15,6 +15,7 @@ public class BaseTest {
 
     protected static String username;
     protected static String password;
+    protected static int accountId;
 
     protected static TmdbClient tmdbClient;
 
@@ -24,6 +25,7 @@ public class BaseTest {
         sessionId = System.getenv("TMDB_SESSION_ID");
         username = System.getenv("TMDB_USERNAME");
         password = System.getenv("TMDB_PASSWORD");
+        accountId = Integer.parseInt(System.getenv("TMDB_ACCOUNT_ID"));
 
         tmdbClient = new TmdbClient.Builder(apiKey)
                 .sessionStore(new InMemorySessionStore())
