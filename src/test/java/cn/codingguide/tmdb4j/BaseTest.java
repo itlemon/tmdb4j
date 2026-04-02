@@ -10,17 +10,27 @@ import org.junit.jupiter.api.BeforeAll;
  */
 public class BaseTest {
 
+    protected static String apiKey;
+    protected static String sessionId;
+
+    protected static String username;
+    protected static String password;
+
     protected static TmdbClient tmdbClient;
 
     @BeforeAll
     public static void tmdbClient() {
-        tmdbClient = new TmdbClient.Builder(System.getenv("API_KEY"))
+        apiKey = System.getenv("TMDB_API_KEY");
+        sessionId = System.getenv("TMDB_SESSION_ID");
+        username = System.getenv("TMDB_USERNAME");
+        password = System.getenv("TMDB_PASSWORD");
+
+        tmdbClient = new TmdbClient.Builder(apiKey)
                 .sessionStore(new InMemorySessionStore())
                 .sessionKeyProvider(new DefaultSessionKeyProvider(() -> "test"))
                 .build();
         // 用于测试的正式会话ID
-        System.out.println(System.getenv("SESSION_ID"));
-        tmdbClient.saveSession(System.getenv("SESSION_ID"));
+        tmdbClient.saveSession(sessionId);
     }
 
 }

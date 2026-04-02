@@ -21,7 +21,7 @@ public class SessionTest extends BaseTest {
 
     @Test
     public void loginAndSaveSession() {
-        String sessionId = tmdbClient.loginAndSaveSession("itlemon", "caifutong122819");
+        String sessionId = tmdbClient.loginAndSaveSession(username, password);
         System.out.println("正式会话ID：" + sessionId);
         Assert.equals(sessionId, tmdbClient.getCurrentSessionId());
         // 这里可以打断点暂定，然后去tmdb看（https://www.themoviedb.org/settings/api/sessions）具体的sessionId列表
