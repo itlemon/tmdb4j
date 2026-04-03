@@ -13,8 +13,11 @@ import cn.codingguide.tmdb4j.api.CompaniesApi;
 import cn.codingguide.tmdb4j.api.ConfigurationApi;
 import cn.codingguide.tmdb4j.api.CreditsApi;
 import cn.codingguide.tmdb4j.api.DiscoverApi;
+import cn.codingguide.tmdb4j.api.FindApi;
+import cn.codingguide.tmdb4j.api.GenresApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
+import cn.codingguide.tmdb4j.constants.ExternalSource;
 import cn.codingguide.tmdb4j.constants.SortBy;
 import cn.codingguide.tmdb4j.exception.TmdbApiException;
 import cn.codingguide.tmdb4j.exception.TmdbClientErrorException;
@@ -52,6 +55,8 @@ import cn.codingguide.tmdb4j.model.configuration.TimezoneEntry;
 import cn.codingguide.tmdb4j.model.credits.CreditResponse;
 import cn.codingguide.tmdb4j.model.discover.MovieDiscoverOptions;
 import cn.codingguide.tmdb4j.model.discover.TvDiscoverOptions;
+import cn.codingguide.tmdb4j.model.find.FindResponse;
+import cn.codingguide.tmdb4j.model.genres.GenreListResponse;
 import cn.codingguide.tmdb4j.model.movies.Movie;
 import cn.codingguide.tmdb4j.model.movies.RatedMovie;
 import cn.codingguide.tmdb4j.model.tvs.RatedTvEpisode;
@@ -84,6 +89,8 @@ public class TmdbClient {
     private final ConfigurationApi configurationApi;
     private final CreditsApi creditsApi;
     private final DiscoverApi discoverApi;
+    private final FindApi findApi;
+    private final GenresApi genresApi;
 
     private final MoviesApi moviesApi;
 
@@ -127,6 +134,8 @@ public class TmdbClient {
         this.configurationApi = retrofit.create(ConfigurationApi.class);
         this.creditsApi = retrofit.create(CreditsApi.class);
         this.discoverApi = retrofit.create(DiscoverApi.class);
+        this.findApi = retrofit.create(FindApi.class);
+        this.genresApi = retrofit.create(GenresApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -634,6 +643,63 @@ public class TmdbClient {
      */
     public PagedResults<TvSeries> discoverTvs(TvDiscoverOptions options) throws TmdbException {
         return executeSync(discoverApi.discoverTvs(options.toQueryMap()));
+    }
+
+    // ==================== 外部ID查询数据相关接口 ====================
+
+    /**
+     * Find TMDB items by an external ID.
+     * <p>
+     * 通过外部 ID 查找 TMDB 条目。
+     *
+     * @param externalId     The external ID to look up.
+     *                       要查找的外部 ID。
+     * @param externalSource The source of the external ID (use ExternalSource enum).
+     *                       外部 ID 的来源（使用 ExternalSource 枚举）。
+     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @return FindResponse containing lists of matching items.
+     * 包含匹配项列表的 FindResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/find-by-id">API LINK</a>
+     */
+    public FindResponse findByExternalId(String externalId, ExternalSource externalSource, String language) throws TmdbException {
+        return executeSync(findApi.findByExternalId(externalId, externalSource.getValue(), language));
+    }
+
+    // ==================== 电影电视类型相关接口 ====================
+
+    /**
+     * Get the list of official genres for movies.
+     * The results can be localized by providing a language parameter.
+     * <p>
+     * 获取电影的官方类型列表。
+     * 可以通过提供 language 参数进行本地化。
+     *
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @return A GenreListResponse containing the list of movie genres.
+     * 包含电影类型列表的 GenreListResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/genre-movie-list">API LINK</a>
+     */
+    public GenreListResponse getMovieGenres(String language) throws TmdbException {
+        return executeSync(genresApi.getMovieGenres(language));
+    }
+
+    /**
+     * Get the list of official genres for TV series.
+     * The results can be localized by providing a language parameter.
+     * <p>
+     * 获取电视剧的官方类型列表。
+     * 可以通过提供 language 参数进行本地化。
+     *
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @return A GenreListResponse containing the list of TV genres.
+     * 包含电视剧类型列表的 GenreListResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/genre-tv-list">API LINK</a>
+     */
+    public GenreListResponse getTvGenres(String language) throws TmdbException {
+        return executeSync(genresApi.getTvGenres(language));
     }
 
 
