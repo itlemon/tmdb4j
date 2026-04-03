@@ -2,6 +2,8 @@ package cn.codingguide.tmdb4j;
 
 import cn.codingguide.tmdb4j.session.DefaultSessionKeyProvider;
 import cn.codingguide.tmdb4j.session.InMemorySessionStore;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.BeforeAll;
 
 /**
@@ -9,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
  * Created on 2026-04-01
  */
 public class BaseTest {
+
+    protected static final Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
     protected static String apiKey;
     protected static String sessionId;

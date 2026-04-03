@@ -1,6 +1,6 @@
 package cn.codingguide.tmdb4j.api;
 
-import cn.codingguide.tmdb4j.model.Movie;
+import cn.codingguide.tmdb4j.model.movies.Movie;
 import cn.codingguide.tmdb4j.model.PagedResults;
 import retrofit2.Call;
 import retrofit2.http.GET;

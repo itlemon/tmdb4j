@@ -2,6 +2,7 @@ package cn.codingguide.tmdb4j.model.collections;
 
 import java.util.List;
 
+import cn.codingguide.tmdb4j.model.images.ImageInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

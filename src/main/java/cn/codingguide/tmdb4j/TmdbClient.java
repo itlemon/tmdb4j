@@ -1,6 +1,7 @@
 package cn.codingguide.tmdb4j;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.codingguide.tmdb4j.api.AccountApi;
@@ -8,6 +9,10 @@ import cn.codingguide.tmdb4j.api.AuthenticationApi;
 import cn.codingguide.tmdb4j.api.CertificationApi;
 import cn.codingguide.tmdb4j.api.ChangesApi;
 import cn.codingguide.tmdb4j.api.CollectionsApi;
+import cn.codingguide.tmdb4j.api.CompaniesApi;
+import cn.codingguide.tmdb4j.api.ConfigurationApi;
+import cn.codingguide.tmdb4j.api.CreditsApi;
+import cn.codingguide.tmdb4j.api.DiscoverApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.constants.SortBy;
@@ -24,16 +29,11 @@ import cn.codingguide.tmdb4j.model.CustomList;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.GuestSessionResponse;
 import cn.codingguide.tmdb4j.model.LoginRequest;
-import cn.codingguide.tmdb4j.model.Movie;
 import cn.codingguide.tmdb4j.model.PagedResults;
-import cn.codingguide.tmdb4j.model.RatedMovie;
-import cn.codingguide.tmdb4j.model.RatedTvEpisode;
-import cn.codingguide.tmdb4j.model.RatedTvSeries;
 import cn.codingguide.tmdb4j.model.RequestTokenResponse;
 import cn.codingguide.tmdb4j.model.SessionResponse;
-import cn.codingguide.tmdb4j.model.TvSeries;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
-import cn.codingguide.tmdb4j.model.account.Account;
+import cn.codingguide.tmdb4j.model.account.AccountDetails;
 import cn.codingguide.tmdb4j.model.certifications.CertificationResponse;
 import cn.codingguide.tmdb4j.model.changes.ChangedMovie;
 import cn.codingguide.tmdb4j.model.changes.ChangedPerson;
@@ -41,6 +41,22 @@ import cn.codingguide.tmdb4j.model.changes.ChangedTvSeries;
 import cn.codingguide.tmdb4j.model.collections.CollectionDetails;
 import cn.codingguide.tmdb4j.model.collections.CollectionImagesResponse;
 import cn.codingguide.tmdb4j.model.collections.CollectionTranslationsResponse;
+import cn.codingguide.tmdb4j.model.companies.CompanyAlternativeNamesResponse;
+import cn.codingguide.tmdb4j.model.companies.CompanyDetails;
+import cn.codingguide.tmdb4j.model.companies.CompanyImagesResponse;
+import cn.codingguide.tmdb4j.model.configuration.ConfigurationResponse;
+import cn.codingguide.tmdb4j.model.configuration.CountryInfo;
+import cn.codingguide.tmdb4j.model.configuration.JobDepartment;
+import cn.codingguide.tmdb4j.model.configuration.LanguageInfo;
+import cn.codingguide.tmdb4j.model.configuration.TimezoneEntry;
+import cn.codingguide.tmdb4j.model.credits.CreditResponse;
+import cn.codingguide.tmdb4j.model.discover.MovieDiscoverOptions;
+import cn.codingguide.tmdb4j.model.discover.TvDiscoverOptions;
+import cn.codingguide.tmdb4j.model.movies.Movie;
+import cn.codingguide.tmdb4j.model.movies.RatedMovie;
+import cn.codingguide.tmdb4j.model.tvs.RatedTvEpisode;
+import cn.codingguide.tmdb4j.model.tvs.RatedTvSeries;
+import cn.codingguide.tmdb4j.model.tvs.TvSeries;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
@@ -64,6 +80,10 @@ public class TmdbClient {
     private final CertificationApi certificationApi;
     private final ChangesApi changesApi;
     private final CollectionsApi collectionsApi;
+    private final CompaniesApi companiesApi;
+    private final ConfigurationApi configurationApi;
+    private final CreditsApi creditsApi;
+    private final DiscoverApi discoverApi;
 
     private final MoviesApi moviesApi;
 
@@ -103,6 +123,10 @@ public class TmdbClient {
         this.certificationApi = retrofit.create(CertificationApi.class);
         this.changesApi = retrofit.create(ChangesApi.class);
         this.collectionsApi = retrofit.create(CollectionsApi.class);
+        this.companiesApi = retrofit.create(CompaniesApi.class);
+        this.configurationApi = retrofit.create(ConfigurationApi.class);
+        this.creditsApi = retrofit.create(CreditsApi.class);
+        this.discoverApi = retrofit.create(DiscoverApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -236,7 +260,7 @@ public class TmdbClient {
      * @return The public details of an account on TMDB.
      * @throws TmdbException
      */
-    public Account getAccountDetails(int accountId) throws TmdbException {
+    public AccountDetails getAccountDetails(int accountId) throws TmdbException {
         return executeSync(accountApi.getAccountDetails(accountId));
     }
 
@@ -305,6 +329,7 @@ public class TmdbClient {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedMovie objects.
      * 包含 ChangedMovie 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-movie-list">API LINK</a>
      */
     public PagedResults<ChangedMovie> getMovieChanges(int page, String startDate, String endDate) throws TmdbException {
         return executeSync(changesApi.getMovieChanges(page, startDate, endDate));
@@ -324,6 +349,7 @@ public class TmdbClient {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedPerson objects.
      * 包含 ChangedPerson 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-people-list">API LINK</a>
      */
     public PagedResults<ChangedPerson> getPersonChanges(int page, String startDate, String endDate) throws TmdbException {
         return executeSync(changesApi.getPersonChanges(page, startDate, endDate));
@@ -343,6 +369,7 @@ public class TmdbClient {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedTvSeries objects.
      * 包含 ChangedTvSeries 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-tv-list">API LINK</a>
      */
     public PagedResults<ChangedTvSeries> getTvChanges(int page, String startDate, String endDate) throws TmdbException {
         return executeSync(changesApi.getTvChanges(page, startDate, endDate));
@@ -363,6 +390,7 @@ public class TmdbClient {
      *                     结果本地化的语言（ISO 639-1，可选带地区，如 "zh-CN"）。
      * @return Collection details containing metadata and a list of parts.
      * 包含元数据和媒体项列表的合集详情。
+     * @see <a href="https://developer.themoviedb.org/reference/collection-details">API LINK</a>
      */
     public CollectionDetails getCollectionDetails(int collectionId, String language) throws TmdbException {
         return executeSync(collectionsApi.getCollectionDetails(collectionId, language));
@@ -375,15 +403,19 @@ public class TmdbClient {
      * 获取指定合集的图片（背景图和海报）。
      * 响应包含两个列表：背景图和海报，每个列表包含图片的元数据。
      *
-     * @param collectionId The unique identifier of the collection.
-     *                     合集的唯一标识符。
-     * @param language     Optional language filter (ISO 639-1 code) to limit images to a specific language.
-     *                     可选的语言过滤器（ISO 639-1 代码），将图片限制为特定语言。
+     * @param collectionId         The unique identifier of the collection.
+     *                             合集的唯一标识符。
+     * @param language             Optional language filter (ISO 639-1 code) to limit images to a specific language.
+     *                             可选的语言过滤器（ISO 639-1 代码），将图片限制为特定语言。
+     * @param includeImageLanguage specify a comma separated list of ISO-639-1 values to query, for example: en-US,null
+     *                             额外的图片语言列表，多个用逗号分隔
      * @return CollectionImagesResponse containing backdrops and posters.
      * 包含背景图和海报的合集图片响应。
+     * @see <a href="https://developer.themoviedb.org/reference/collection-images">API LINK</a>
      */
-    public CollectionImagesResponse getCollectionImages(int collectionId, String language) throws TmdbException {
-        return executeSync(collectionsApi.getCollectionImages(collectionId, language));
+    public CollectionImagesResponse getCollectionImages(int collectionId, String language,
+                                                        String includeImageLanguage) throws TmdbException {
+        return executeSync(collectionsApi.getCollectionImages(collectionId, language, includeImageLanguage));
     }
 
     /**
@@ -397,10 +429,213 @@ public class TmdbClient {
      *                     合集的唯一标识符。
      * @return CollectionTranslationsResponse containing the list of translations.
      * 包含翻译列表的合集翻译响应。
+     * @see <a href="https://developer.themoviedb.org/reference/collection-translations">API LINK</a>
      */
     public CollectionTranslationsResponse getCollectionTranslations(int collectionId) throws TmdbException {
         return executeSync(collectionsApi.getCollectionTranslations(collectionId));
     }
+
+    // ==================== 电影公司相关接口 ====================
+
+    /**
+     * Get details of a production company by its ID.
+     * The response includes company information such as name, description, headquarters, homepage, logo, and parent
+     * company.
+     * <p>
+     * 根据公司 ID 获取制作公司的详细信息。
+     * 响应包含公司信息，如名称、描述、总部、主页、标志以及母公司。
+     *
+     * @param companyId The unique identifier of the company.
+     *                  公司的唯一标识符。
+     * @return CompanyDetails object containing the company information.
+     * 包含公司信息的 CompanyDetails 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/company-details">API LINK</a>
+     */
+    public CompanyDetails getCompanyDetails(int companyId) throws TmdbException {
+        return executeSync(companiesApi.getCompanyDetails(companyId));
+    }
+
+    /**
+     * Get a list of alternative names for a specific company.
+     * The response includes the company ID and a list of alternative names with language and country codes.
+     * <p>
+     * 获取指定公司的备选名称列表。
+     * 响应包含公司 ID 以及带有语言和国家代码的备选名称列表。
+     *
+     * @param companyId The unique identifier of the company.
+     *                  公司的唯一标识符。
+     * @return CompanyAlternativeNamesResponse containing the list of alternative names.
+     * 包含备选名称列表的公司备选名称响应。
+     * @see <a href="https://developer.themoviedb.org/reference/company-alternative-names">API LINK</a>
+     */
+    public CompanyAlternativeNamesResponse getCompanyAlternativeNames(int companyId) throws TmdbException {
+        return executeSync(companiesApi.getCompanyAlternativeNames(companyId));
+    }
+
+    /**
+     * Get logo images for a specific company.
+     * The response includes a list of logo images with metadata such as dimensions, language, and vote statistics.
+     * <p>
+     * 获取指定公司的标志图片。
+     * 响应包含标志图片列表及其元数据（尺寸、语言、投票统计等）。
+     *
+     * @param companyId The unique identifier of the company.
+     *                  公司的唯一标识符。
+     * @return CompanyImagesResponse containing the list of logo images.
+     * 包含标志图片列表的公司图片响应。
+     * @see <a href="https://developer.themoviedb.org/reference/company-images">API LINK</a>
+     */
+    public CompanyImagesResponse getCompanyImages(int companyId) throws TmdbException {
+        return executeSync(companiesApi.getCompanyImages(companyId));
+    }
+
+    // ==================== API 配置相关接口 ====================
+
+    /**
+     * Get the API configuration information.
+     * This includes image base URLs, available size options, and change keys.
+     * <p>
+     * 获取 API 配置信息。
+     * 包括图片基础 URL、可用尺寸选项以及变更密钥。
+     *
+     * @return ConfigurationResponse containing global configuration data.
+     * 包含全局配置数据的 ConfigurationResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-details">API LINK</a>
+     */
+    public ConfigurationResponse getConfigurationDetails() throws TmdbException {
+        return executeSync(configurationApi.getConfigurationDetails());
+    }
+
+    /**
+     * Get the list of countries supported by TMDB.
+     * The response is an array of country objects containing ISO 3166-1 codes, English names, and native names.
+     * <p>
+     * 获取 TMDB 支持的国家/地区列表。
+     * 响应是一个国家对象数组，包含 ISO 3166-1 代码、英文名称和本土名称。
+     *
+     * @return A list of CountryInfo objects.
+     * CountryInfo 对象的列表。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-countries">API LINK</a>
+     */
+    public List<CountryInfo> getCountries() throws TmdbException {
+        return executeSync(configurationApi.getCountries());
+    }
+
+    /**
+     * Get the list of languages supported by TMDB.
+     * The response is an array of language objects containing ISO 639-1 codes, English names, and native names.
+     * <p>
+     * 获取 TMDB 支持的语言列表。
+     * 响应是一个语言对象数组，包含 ISO 639-1 代码、英文名称和本土名称。
+     *
+     * @return A list of LanguageInfo objects.
+     * LanguageInfo 对象的列表。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-languages">API LINK</a>
+     */
+    public List<LanguageInfo> getLanguages() throws TmdbException {
+        return executeSync(configurationApi.getLanguages());
+    }
+
+    /**
+     * Get the list of departments and their associated jobs.
+     * The response is an array of JobDepartment objects.
+     * <p>
+     * 获取部门及其关联的工作岗位列表。
+     * 响应是一个 JobDepartment 对象数组。
+     *
+     * @return A list of JobDepartment objects.
+     * JobDepartment 对象的列表。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-jobs">API LINK</a>
+     */
+    public List<JobDepartment> getJobs() throws TmdbException {
+        return executeSync(configurationApi.getJobs());
+    }
+
+    /**
+     * Get the list of primary translation language codes supported by TMDB.
+     * The response is an array of language codes with optional region suffix (e.g., "en-US", "zh-CN").
+     * <p>
+     * 获取 TMDB 支持的主要翻译语言代码列表。
+     * 响应是一个语言代码数组，可能包含地区后缀（例如 "en-US", "zh-CN"）。
+     *
+     * @return A list of language code strings (e.g., "af-ZA", "ar-AE").
+     * 语言代码字符串列表（例如 "af-ZA", "ar-AE"）。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-primary-translations">API LINK</a>
+     */
+    public List<String> getPrimaryTranslations() throws TmdbException {
+        return executeSync(configurationApi.getPrimaryTranslations());
+    }
+
+    /**
+     * Get the list of time zones supported by TMDB.
+     * The response is an array of TimezoneEntry objects, each containing a country code and its time zones.
+     * <p>
+     * 获取 TMDB 支持的时区列表。
+     * 响应是一个 TimezoneEntry 对象数组，每个对象包含国家代码及其时区列表。
+     *
+     * @return A list of TimezoneEntry objects.
+     * TimezoneEntry 对象的列表。
+     * @see <a href="https://developer.themoviedb.org/reference/configuration-timezones">API LINK</a>
+     */
+    public List<TimezoneEntry> getTimezones() throws TmdbException {
+        return executeSync(configurationApi.getTimezones());
+    }
+
+    // ==================== 演职员等相关接口 ====================
+
+    /**
+     * Get details of a credit (cast/crew) by its ID.
+     * The response includes information about the credit type, media, and person.
+     * <p>
+     * 根据演职员记录 ID 获取详情。
+     * 响应包含演职员类型、关联媒体和人员的信息。
+     *
+     * @param creditId The unique identifier of the credit.
+     *                 演职员记录的唯一标识符。
+     * @return CreditResponse containing the credit details.
+     * 包含演职员详情的 CreditResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/credit-details">API LINK</a>
+     */
+    public CreditResponse getCreditDetails(String creditId, String language) throws TmdbException {
+        return executeSync(creditsApi.getCreditDetails(creditId, language));
+    }
+
+    // ==================== 高级筛选电影电视相关接口 ====================
+
+    /**
+     * Discover movies by various filters.
+     * Returns a paginated list of movies matching the criteria.
+     * <p>
+     * 通过多种筛选条件发现电影。
+     * 返回符合条件的分页电影列表。
+     *
+     * @param options The discover options (filters, sorting, pagination).
+     *                发现选项（过滤器、排序、分页）。
+     * @return A paginated result of Movie objects.
+     * 电影对象的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/discover-movie">API LINK</a>
+     */
+    public PagedResults<Movie> discoverMovies(MovieDiscoverOptions options) throws TmdbException {
+        return executeSync(discoverApi.discoverMovies(options.toQueryMap()));
+    }
+
+    /**
+     * Discover TV series by various filters.
+     * Returns a paginated list of TV series matching the criteria.
+     * <p>
+     * 通过多种筛选条件发现电视剧。
+     * 返回符合条件的电视剧分页列表。
+     *
+     * @param options The discover options as a map (filters, sorting, pagination).
+     *                发现选项作为映射（过滤器、排序、分页）。
+     * @return A paginated result of TvSeries objects.
+     * 电视剧对象的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/discover-tv">API LINK</a>
+     */
+    public PagedResults<TvSeries> discoverTvs(TvDiscoverOptions options) throws TmdbException {
+        return executeSync(discoverApi.discoverTvs(options.toQueryMap()));
+    }
+
 
     public Movie getMovieDetails(int movieId) throws TmdbException {
         return executeSync(moviesApi.getDetails(movieId));

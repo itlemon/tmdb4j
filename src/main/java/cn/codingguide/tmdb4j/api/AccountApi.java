@@ -4,14 +4,14 @@ import cn.codingguide.tmdb4j.annotation.RequiresSession;
 import cn.codingguide.tmdb4j.model.BaseResponse;
 import cn.codingguide.tmdb4j.model.CustomList;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
-import cn.codingguide.tmdb4j.model.Movie;
+import cn.codingguide.tmdb4j.model.movies.Movie;
 import cn.codingguide.tmdb4j.model.PagedResults;
-import cn.codingguide.tmdb4j.model.RatedMovie;
-import cn.codingguide.tmdb4j.model.RatedTvEpisode;
-import cn.codingguide.tmdb4j.model.RatedTvSeries;
-import cn.codingguide.tmdb4j.model.TvSeries;
+import cn.codingguide.tmdb4j.model.movies.RatedMovie;
+import cn.codingguide.tmdb4j.model.tvs.RatedTvEpisode;
+import cn.codingguide.tmdb4j.model.tvs.RatedTvSeries;
+import cn.codingguide.tmdb4j.model.tvs.TvSeries;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
-import cn.codingguide.tmdb4j.model.account.Account;
+import cn.codingguide.tmdb4j.model.account.AccountDetails;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -28,7 +28,7 @@ public interface AccountApi {
 
     // https://developer.themoviedb.org/reference/account-details
     @GET("account/{account_id}")
-    Call<Account> getAccountDetails(
+    Call<AccountDetails> getAccountDetails(
             @Path("account_id") int accountId
     );
 

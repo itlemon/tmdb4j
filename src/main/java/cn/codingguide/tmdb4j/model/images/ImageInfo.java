@@ -1,4 +1,4 @@
-package cn.codingguide.tmdb4j.model.collections;
+package cn.codingguide.tmdb4j.model.images;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -22,6 +22,12 @@ import lombok.ToString;
 public class ImageInfo {
 
     /**
+     * The unique identifier of the image.
+     * 图片的唯一标识符。
+     */
+    private String id;
+
+    /**
      * The aspect ratio of the image (width / height).
      * 图片的宽高比（宽度/高度）。
      */
@@ -33,6 +39,13 @@ public class ImageInfo {
      * 图片的高度（像素）。
      */
     private int height;
+
+    /**
+     * The country/region code (ISO 3166-1) for this image.
+     * 此翻译的国家/地区代码（ISO 3166-1）。
+     */
+    @SerializedName("iso_3166_1")
+    private String countryCode;
 
     /**
      * The language of the image content (e.g., "en" for English, "pt" for Portuguese).
@@ -50,6 +63,14 @@ public class ImageInfo {
      */
     @SerializedName("file_path")
     private String filePath;
+
+    /**
+     * The format of image.
+     * There are two image formats that are supported for companies, PNG's and SVG's.
+     * 图片格式，后缀名
+     */
+    @SerializedName("file_type")
+    private String fileType;
 
     /**
      * The average vote score (0-10) for this image.

@@ -45,17 +45,17 @@ public class CollectionPart {
     private int id;
 
     /**
-     * The name of the movie or TV show (localized).
+     * The title of the movie or TV show (localized).
      * 电影或电视剧的名称（本地化）。
      */
-    private String name;
+    private String title;
 
     /**
-     * The original name of the movie or TV show.
+     * The original title of the movie or TV show.
      * 电影或电视剧的原始名称。
      */
-    @SerializedName("original_name")
-    private String originalName;
+    @SerializedName("original_title")
+    private String originalTitle;
 
     /**
      * The overview/description of the movie or TV show.

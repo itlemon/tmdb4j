@@ -1,9 +1,9 @@
 package cn.codingguide.tmdb4j.api;
 
+import cn.codingguide.tmdb4j.model.PagedResults;
 import cn.codingguide.tmdb4j.model.changes.ChangedMovie;
 import cn.codingguide.tmdb4j.model.changes.ChangedPerson;
 import cn.codingguide.tmdb4j.model.changes.ChangedTvSeries;
-import cn.codingguide.tmdb4j.model.PagedResults;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -28,6 +28,7 @@ public interface ChangesApi {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedMovie objects.
      * 包含 ChangedMovie 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-movie-list">API LINK</a>
      */
     @GET("movie/changes")
     Call<PagedResults<ChangedMovie>> getMovieChanges(
@@ -50,6 +51,7 @@ public interface ChangesApi {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedPerson objects.
      * 包含 ChangedPerson 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-people-list">API LINK</a>
      */
     @GET("person/changes")
     Call<PagedResults<ChangedPerson>> getPersonChanges(
@@ -72,6 +74,7 @@ public interface ChangesApi {
      *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
      * @return A paginated result containing a list of ChangedTvSeries objects.
      * 包含 ChangedTvSeries 对象列表的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/changes-tv-list">API LINK</a>
      */
     @GET("tv/changes")
     Call<PagedResults<ChangedTvSeries>> getTvChanges(
