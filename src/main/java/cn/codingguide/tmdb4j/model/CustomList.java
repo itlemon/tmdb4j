@@ -41,7 +41,7 @@ public class CustomList {
      * 列表的语言，使用 ISO 639-1 标准的两字母语言代码表示，例如 zh 表示中文
      */
     @SerializedName("iso_639_1")
-    private String language;
+    private String languageCode;
 
     /**
      * 列表的类型，可选值 "movie" 或 "tv"

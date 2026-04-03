@@ -39,6 +39,8 @@ import cn.codingguide.tmdb4j.model.changes.ChangedMovie;
 import cn.codingguide.tmdb4j.model.changes.ChangedPerson;
 import cn.codingguide.tmdb4j.model.changes.ChangedTvSeries;
 import cn.codingguide.tmdb4j.model.collections.CollectionDetails;
+import cn.codingguide.tmdb4j.model.collections.CollectionImagesResponse;
+import cn.codingguide.tmdb4j.model.collections.CollectionTranslationsResponse;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
@@ -364,6 +366,40 @@ public class TmdbClient {
      */
     public CollectionDetails getCollectionDetails(int collectionId, String language) throws TmdbException {
         return executeSync(collectionsApi.getCollectionDetails(collectionId, language));
+    }
+
+    /**
+     * Get images (backdrops and posters) for a specific collection.
+     * The response includes two lists: backdrops and posters, each containing image metadata.
+     * <p>
+     * 获取指定合集的图片（背景图和海报）。
+     * 响应包含两个列表：背景图和海报，每个列表包含图片的元数据。
+     *
+     * @param collectionId The unique identifier of the collection.
+     *                     合集的唯一标识符。
+     * @param language     Optional language filter (ISO 639-1 code) to limit images to a specific language.
+     *                     可选的语言过滤器（ISO 639-1 代码），将图片限制为特定语言。
+     * @return CollectionImagesResponse containing backdrops and posters.
+     * 包含背景图和海报的合集图片响应。
+     */
+    public CollectionImagesResponse getCollectionImages(int collectionId, String language) throws TmdbException {
+        return executeSync(collectionsApi.getCollectionImages(collectionId, language));
+    }
+
+    /**
+     * Get a list of translations for a specific collection.
+     * Each translation contains language metadata and the translated title, overview, and homepage.
+     * <p>
+     * 获取指定合集的翻译列表。
+     * 每个翻译包含语言元数据以及翻译后的标题、概述和主页。
+     *
+     * @param collectionId The unique identifier of the collection.
+     *                     合集的唯一标识符。
+     * @return CollectionTranslationsResponse containing the list of translations.
+     * 包含翻译列表的合集翻译响应。
+     */
+    public CollectionTranslationsResponse getCollectionTranslations(int collectionId) throws TmdbException {
+        return executeSync(collectionsApi.getCollectionTranslations(collectionId));
     }
 
     public Movie getMovieDetails(int movieId) throws TmdbException {
