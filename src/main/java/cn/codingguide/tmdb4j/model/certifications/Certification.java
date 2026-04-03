@@ -1,4 +1,4 @@
-package cn.codingguide.tmdb4j.model;
+package cn.codingguide.tmdb4j.model.certifications;
 
 import lombok.Getter;
 import lombok.Setter;

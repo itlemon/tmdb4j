@@ -1,4 +1,4 @@
-package cn.codingguide.tmdb4j.model;
+package cn.codingguide.tmdb4j.model.certifications;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package cn.codingguide.tmdb4j.api;
 
-import cn.codingguide.tmdb4j.model.CertificationResponse;
+import cn.codingguide.tmdb4j.model.certifications.CertificationResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 

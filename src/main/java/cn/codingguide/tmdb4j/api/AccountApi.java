@@ -1,7 +1,6 @@
 package cn.codingguide.tmdb4j.api;
 
 import cn.codingguide.tmdb4j.annotation.RequiresSession;
-import cn.codingguide.tmdb4j.model.Account;
 import cn.codingguide.tmdb4j.model.BaseResponse;
 import cn.codingguide.tmdb4j.model.CustomList;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
@@ -10,9 +9,9 @@ import cn.codingguide.tmdb4j.model.PagedResults;
 import cn.codingguide.tmdb4j.model.RatedMovie;
 import cn.codingguide.tmdb4j.model.RatedTvEpisode;
 import cn.codingguide.tmdb4j.model.RatedTvSeries;
-import cn.codingguide.tmdb4j.model.RatingRequest;
 import cn.codingguide.tmdb4j.model.TvSeries;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
+import cn.codingguide.tmdb4j.model.account.Account;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -115,12 +114,6 @@ public interface AccountApi {
             @Query("language") String language,
             @Query("page") int page,
             @Query("sort_by") String sortBy
-    );
-
-    @POST("movie/{movie_id}/rating")
-    Call<BaseResponse> rateMovie(
-            @Path("movie_id") int movieId,
-            @Body RatingRequest rating
     );
 
 }

@@ -7,6 +7,7 @@ import cn.codingguide.tmdb4j.api.AccountApi;
 import cn.codingguide.tmdb4j.api.AuthenticationApi;
 import cn.codingguide.tmdb4j.api.CertificationApi;
 import cn.codingguide.tmdb4j.api.ChangesApi;
+import cn.codingguide.tmdb4j.api.CollectionsApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.constants.SortBy;
@@ -18,10 +19,7 @@ import cn.codingguide.tmdb4j.exception.TmdbSessionException;
 import cn.codingguide.tmdb4j.interceptor.ApiKeyInterceptor;
 import cn.codingguide.tmdb4j.interceptor.SessionInterceptor;
 import cn.codingguide.tmdb4j.interceptor.TmdbResponseInterceptor;
-import cn.codingguide.tmdb4j.model.Account;
 import cn.codingguide.tmdb4j.model.BaseResponse;
-import cn.codingguide.tmdb4j.model.CertificationResponse;
-import cn.codingguide.tmdb4j.model.ChangedMovie;
 import cn.codingguide.tmdb4j.model.CustomList;
 import cn.codingguide.tmdb4j.model.FavoriteRequest;
 import cn.codingguide.tmdb4j.model.GuestSessionResponse;
@@ -35,6 +33,12 @@ import cn.codingguide.tmdb4j.model.RequestTokenResponse;
 import cn.codingguide.tmdb4j.model.SessionResponse;
 import cn.codingguide.tmdb4j.model.TvSeries;
 import cn.codingguide.tmdb4j.model.WatchlistRequest;
+import cn.codingguide.tmdb4j.model.account.Account;
+import cn.codingguide.tmdb4j.model.certifications.CertificationResponse;
+import cn.codingguide.tmdb4j.model.changes.ChangedMovie;
+import cn.codingguide.tmdb4j.model.changes.ChangedPerson;
+import cn.codingguide.tmdb4j.model.changes.ChangedTvSeries;
+import cn.codingguide.tmdb4j.model.collections.CollectionDetails;
 import cn.codingguide.tmdb4j.session.SessionKeyProvider;
 import cn.codingguide.tmdb4j.session.SessionStore;
 import cn.hutool.core.util.StrUtil;
@@ -57,6 +61,7 @@ public class TmdbClient {
     private final AuthenticationApi authenticationApi;
     private final CertificationApi certificationApi;
     private final ChangesApi changesApi;
+    private final CollectionsApi collectionsApi;
 
     private final MoviesApi moviesApi;
 
@@ -95,6 +100,7 @@ public class TmdbClient {
         this.authenticationApi = retrofit.create(AuthenticationApi.class);
         this.certificationApi = retrofit.create(CertificationApi.class);
         this.changesApi = retrofit.create(ChangesApi.class);
+        this.collectionsApi = retrofit.create(CollectionsApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -284,17 +290,81 @@ public class TmdbClient {
     // ==================== 电影、电视、人物信息变更列表相关接口 ====================
 
     /**
-     * You can query this method up to 14 days at a time. Use the start_date and end_date query parameters. 100 items
-     * are returned per page.
+     * Get a list of movie IDs that have been changed within a specified time period.
+     * The results are paginated.
+     * <p>
+     * 获取在指定时间段内发生变更的电影 ID 列表。结果以分页形式返回。
      *
-     * @param page      页码，最小值为 1。
-     * @param startDate 筛选变更的起始日期，格式为 YYYY-MM-DD。
-     * @param endDate   筛选变更的结束日期，格式为 YYYY-MM-DD。
+     * @param page      The page number to fetch. Minimum 1. Default 1.
+     *                  要获取的页码。最小值为 1。默认为 1。
+     * @param startDate Filter changes starting from this date (format: YYYY-MM-DD).
+     *                  筛选变更的起始日期（格式：YYYY-MM-DD）。
+     * @param endDate   Filter changes up to this date (format: YYYY-MM-DD).
+     *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
+     * @return A paginated result containing a list of ChangedMovie objects.
+     * 包含 ChangedMovie 对象列表的分页结果。
      */
     public PagedResults<ChangedMovie> getMovieChanges(int page, String startDate, String endDate) throws TmdbException {
         return executeSync(changesApi.getMovieChanges(page, startDate, endDate));
     }
 
+    /**
+     * Get a list of person IDs that have been changed within a specified time period.
+     * The results are paginated.
+     * <p>
+     * 获取在指定时间段内发生变更的人员 ID 列表。结果以分页形式返回。
+     *
+     * @param page      The page number to fetch. Minimum 1. Default 1.
+     *                  要获取的页码。最小值为 1。默认为 1。
+     * @param startDate Filter changes starting from this date (format: YYYY-MM-DD).
+     *                  筛选变更的起始日期（格式：YYYY-MM-DD）。
+     * @param endDate   Filter changes up to this date (format: YYYY-MM-DD).
+     *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
+     * @return A paginated result containing a list of ChangedPerson objects.
+     * 包含 ChangedPerson 对象列表的分页结果。
+     */
+    public PagedResults<ChangedPerson> getPersonChanges(int page, String startDate, String endDate) throws TmdbException {
+        return executeSync(changesApi.getPersonChanges(page, startDate, endDate));
+    }
+
+    /**
+     * Get a list of TV series IDs that have been changed within a specified time period.
+     * The results are paginated.
+     * <p>
+     * 获取在指定时间段内发生变更的电视剧 ID 列表。结果以分页形式返回。
+     *
+     * @param page      The page number to fetch. Minimum 1. Default 1.
+     *                  要获取的页码。最小值为 1。默认为 1。
+     * @param startDate Filter changes starting from this date (format: YYYY-MM-DD).
+     *                  筛选变更的起始日期（格式：YYYY-MM-DD）。
+     * @param endDate   Filter changes up to this date (format: YYYY-MM-DD).
+     *                  筛选变更的结束日期（格式：YYYY-MM-DD）。
+     * @return A paginated result containing a list of ChangedTvSeries objects.
+     * 包含 ChangedTvSeries 对象列表的分页结果。
+     */
+    public PagedResults<ChangedTvSeries> getTvChanges(int page, String startDate, String endDate) throws TmdbException {
+        return executeSync(changesApi.getTvChanges(page, startDate, endDate));
+    }
+
+    // ==================== 电影、电视合集相关接口 ====================
+
+    /**
+     * Get details of a movie collection (e.g., "Star Wars Collection").
+     * The response includes collection information and the list of movies/TV shows in the collection.
+     * <p>
+     * 获取电影合集的详细信息（例如“星球大战合集”）。
+     * 响应包含合集信息以及合集内的电影/电视剧列表。
+     *
+     * @param collectionId The unique identifier of the collection.
+     *                     合集的唯一标识符。
+     * @param language     The language to localize the results (ISO 639-1, optionally with region, e.g., "zh-CN").
+     *                     结果本地化的语言（ISO 639-1，可选带地区，如 "zh-CN"）。
+     * @return Collection details containing metadata and a list of parts.
+     * 包含元数据和媒体项列表的合集详情。
+     */
+    public CollectionDetails getCollectionDetails(int collectionId, String language) throws TmdbException {
+        return executeSync(collectionsApi.getCollectionDetails(collectionId, language));
+    }
 
     public Movie getMovieDetails(int movieId) throws TmdbException {
         return executeSync(moviesApi.getDetails(movieId));

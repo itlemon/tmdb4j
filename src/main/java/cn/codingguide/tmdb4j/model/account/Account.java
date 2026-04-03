@@ -1,4 +1,4 @@
-package cn.codingguide.tmdb4j.model;
+package cn.codingguide.tmdb4j.model.account;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
