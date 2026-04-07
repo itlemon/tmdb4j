@@ -15,6 +15,7 @@ import cn.codingguide.tmdb4j.api.CreditsApi;
 import cn.codingguide.tmdb4j.api.DiscoverApi;
 import cn.codingguide.tmdb4j.api.FindApi;
 import cn.codingguide.tmdb4j.api.GenresApi;
+import cn.codingguide.tmdb4j.api.GuestSessionApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.constants.ExternalSource;
@@ -91,6 +92,7 @@ public class TmdbClient {
     private final DiscoverApi discoverApi;
     private final FindApi findApi;
     private final GenresApi genresApi;
+    private final GuestSessionApi guestSessionApi;
 
     private final MoviesApi moviesApi;
 
@@ -136,6 +138,7 @@ public class TmdbClient {
         this.discoverApi = retrofit.create(DiscoverApi.class);
         this.findApi = retrofit.create(FindApi.class);
         this.genresApi = retrofit.create(GenresApi.class);
+        this.guestSessionApi = retrofit.create(GuestSessionApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -700,6 +703,83 @@ public class TmdbClient {
      */
     public GenreListResponse getTvGenres(String language) throws TmdbException {
         return executeSync(genresApi.getTvGenres(language));
+    }
+
+    // ==================== Guest Session 相关接口 ====================
+
+    /**
+     * Get the list of movies rated by a guest session.
+     * The response is paginated and contains movie details with the user's rating.
+     * <p>
+     * 获取游客会话已评分的电影列表。
+     * 响应为分页格式，包含电影详情及用户的评分。
+     *
+     * @param guestSessionId The guest session ID.
+     *                       游客会话 ID。
+     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page           The page number (default 1).
+     *                       页码（默认为 1）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @return Paginated results of RatedMovie.
+     * 分页的 RatedMovie 结果。
+     * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-movies">API LINK</a>
+     */
+    public PagedResults<RatedMovie> getGuestSessionRatedMovies(String guestSessionId, String language, Integer page,
+                                                               SortBy sortBy) throws TmdbException {
+        return executeSync(guestSessionApi.getGuestSessionRatedMovies(guestSessionId, language, page,
+                sortBy.getValue()));
+    }
+
+    /**
+     * Get the list of TV series rated by a guest session.
+     * The response is paginated and contains TV series details with the user's rating.
+     * <p>
+     * 获取游客会话已评分的电视剧列表。
+     * 响应为分页格式，包含电视剧详情及用户的评分。
+     *
+     * @param guestSessionId The guest session ID.
+     *                       游客会话 ID。
+     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page           The page number (default 1).
+     *                       页码（默认为 1）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @return Paginated results of RatedTvSeries.
+     * 分页的 RatedTvSeries 结果。
+     * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv">API LINK</a>
+     */
+    public PagedResults<RatedTvSeries> getGuestSessionRatedTv(String guestSessionId, String language, Integer page,
+                                                              SortBy sortBy) throws TmdbException {
+        return executeSync(guestSessionApi.getGuestSessionRatedTv(guestSessionId, language, page,
+                sortBy.getValue()));
+    }
+
+    /**
+     * Get the list of TV episodes rated by a guest session.
+     * The response is paginated and contains episode details with the user's rating.
+     * <p>
+     * 获取游客会话已评分的剧集列表。
+     * 响应为分页格式，包含剧集详情及用户的评分。
+     *
+     * @param guestSessionId The guest session ID.
+     *                       游客会话 ID。
+     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page           The page number (default 1).
+     *                       页码（默认为 1）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @return Paginated results of RatedTvEpisode.
+     * 分页的 RatedTvEpisode 结果。
+     * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv-episodes">API LINK</a>
+     */
+    public PagedResults<RatedTvEpisode> getGuestSessionRatedTvEpisodes(String guestSessionId, String language,
+                                                                       Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(guestSessionApi.getGuestSessionRatedTvEpisodes(guestSessionId, language, page,
+                sortBy.getValue()));
     }
 
 

@@ -29,7 +29,9 @@ public interface DiscoverApi {
      * @see <a href="https://developer.themoviedb.org/reference/discover-movie">API LINK</a>
      */
     @GET("discover/movie")
-    Call<PagedResults<Movie>> discoverMovies(@QueryMap Map<String, String> options);
+    Call<PagedResults<Movie>> discoverMovies(
+            @QueryMap Map<String, String> options
+    );
 
     /**
      * Discover TV series by various filters.
@@ -45,6 +47,8 @@ public interface DiscoverApi {
      * @see <a href="https://developer.themoviedb.org/reference/discover-tv">API LINK</a>
      */
     @GET("discover/tv")
-    Call<PagedResults<TvSeries>> discoverTvs(@QueryMap Map<String, String> options);
+    Call<PagedResults<TvSeries>> discoverTvs(
+            @QueryMap Map<String, String> options
+    );
 
 }
