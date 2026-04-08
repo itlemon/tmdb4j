@@ -38,7 +38,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedMovie>> getGuestSessionRatedMovies(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") Integer page,
+            @Query("page") int page,
             @Query("sort_by") String sortBy
     );
 
@@ -65,7 +65,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedTvSeries>> getGuestSessionRatedTv(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") Integer page,
+            @Query("page") int page,
             @Query("sort_by") String sortBy
     );
 
@@ -92,7 +92,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedTvEpisode>> getGuestSessionRatedTvEpisodes(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") Integer page,
+            @Query("page") int page,
             @Query("sort_by") String sortBy
     );
 

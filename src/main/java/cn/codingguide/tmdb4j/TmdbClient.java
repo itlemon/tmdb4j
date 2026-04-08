@@ -16,6 +16,8 @@ import cn.codingguide.tmdb4j.api.DiscoverApi;
 import cn.codingguide.tmdb4j.api.FindApi;
 import cn.codingguide.tmdb4j.api.GenresApi;
 import cn.codingguide.tmdb4j.api.GuestSessionApi;
+import cn.codingguide.tmdb4j.api.KeywordsApi;
+import cn.codingguide.tmdb4j.api.ListsApi;
 import cn.codingguide.tmdb4j.api.MoviesApi;
 import cn.codingguide.tmdb4j.auth.AuthMethod;
 import cn.codingguide.tmdb4j.constants.ExternalSource;
@@ -58,6 +60,11 @@ import cn.codingguide.tmdb4j.model.discover.MovieDiscoverOptions;
 import cn.codingguide.tmdb4j.model.discover.TvDiscoverOptions;
 import cn.codingguide.tmdb4j.model.find.FindResponse;
 import cn.codingguide.tmdb4j.model.genres.GenreListResponse;
+import cn.codingguide.tmdb4j.model.keywords.Keyword;
+import cn.codingguide.tmdb4j.model.lists.AddItemRequest;
+import cn.codingguide.tmdb4j.model.lists.CreateListRequest;
+import cn.codingguide.tmdb4j.model.lists.CreateListResponse;
+import cn.codingguide.tmdb4j.model.lists.ItemStatusResponse;
 import cn.codingguide.tmdb4j.model.movies.Movie;
 import cn.codingguide.tmdb4j.model.movies.RatedMovie;
 import cn.codingguide.tmdb4j.model.tvs.RatedTvEpisode;
@@ -93,6 +100,8 @@ public class TmdbClient {
     private final FindApi findApi;
     private final GenresApi genresApi;
     private final GuestSessionApi guestSessionApi;
+    private final KeywordsApi keywordsApi;
+    private final ListsApi listsApi;
 
     private final MoviesApi moviesApi;
 
@@ -139,6 +148,8 @@ public class TmdbClient {
         this.findApi = retrofit.create(FindApi.class);
         this.genresApi = retrofit.create(GenresApi.class);
         this.guestSessionApi = retrofit.create(GuestSessionApi.class);
+        this.keywordsApi = retrofit.create(KeywordsApi.class);
+        this.listsApi = retrofit.create(ListsApi.class);
 
         this.moviesApi = retrofit.create(MoviesApi.class);
     }
@@ -726,7 +737,7 @@ public class TmdbClient {
      * 分页的 RatedMovie 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-movies">API LINK</a>
      */
-    public PagedResults<RatedMovie> getGuestSessionRatedMovies(String guestSessionId, String language, Integer page,
+    public PagedResults<RatedMovie> getGuestSessionRatedMovies(String guestSessionId, String language, int page,
                                                                SortBy sortBy) throws TmdbException {
         return executeSync(guestSessionApi.getGuestSessionRatedMovies(guestSessionId, language, page,
                 sortBy.getValue()));
@@ -751,7 +762,7 @@ public class TmdbClient {
      * 分页的 RatedTvSeries 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv">API LINK</a>
      */
-    public PagedResults<RatedTvSeries> getGuestSessionRatedTv(String guestSessionId, String language, Integer page,
+    public PagedResults<RatedTvSeries> getGuestSessionRatedTv(String guestSessionId, String language, int page,
                                                               SortBy sortBy) throws TmdbException {
         return executeSync(guestSessionApi.getGuestSessionRatedTv(guestSessionId, language, page,
                 sortBy.getValue()));
@@ -777,9 +788,128 @@ public class TmdbClient {
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv-episodes">API LINK</a>
      */
     public PagedResults<RatedTvEpisode> getGuestSessionRatedTvEpisodes(String guestSessionId, String language,
-                                                                       Integer page, SortBy sortBy) throws TmdbException {
+                                                                       int page, SortBy sortBy) throws TmdbException {
         return executeSync(guestSessionApi.getGuestSessionRatedTvEpisodes(guestSessionId, language, page,
                 sortBy.getValue()));
+    }
+
+    // ==================== 关键词相关接口 ====================
+
+    /**
+     * Get the basic information for a specific keyword ID.
+     * <p>
+     * 根据特定关键词ID获取其基本信息。
+     *
+     * @param keywordId The unique identifier of the keyword.
+     *                  关键词的唯一标识符。
+     * @return A Call object with a Keyword instance.
+     * 一个包含Keyword实例的Call对象。
+     * @see <a href="https://developer.themoviedb.org/reference/keyword-details">API LINK</a>
+     */
+    public Keyword getKeywordDetails(int keywordId) throws TmdbException {
+        return executeSync(keywordsApi.getKeywordDetails(keywordId));
+    }
+
+    /**
+     * Get the list of movies that have this keyword.
+     * The response is paginated and contains movie details.
+     * This method is deprecated, Use /discover/movie with with_keywords instead.
+     * <p>
+     * 获取包含该关键词的电影列表。
+     * 响应为分页格式，包含电影详情。
+     * 这个接口过期了，请使用 /discover/movie 接口。
+     *
+     * @param keywordId The unique identifier of the keyword.
+     *                  关键词的唯一标识符。
+     * @param language  Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                  可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page      The page number (default 1).
+     *                  页码（默认为 1）。
+     * @return Paginated results of movies.
+     * 分页的电影结果。
+     * @see <a href="https://developer.themoviedb.org/reference/keyword-movies">API LINK</a>
+     */
+    @Deprecated
+    public PagedResults<Movie> getKeywordMovies(int keywordId, String language, int page) throws TmdbException {
+        return executeSync(keywordsApi.getKeywordMovies(keywordId, language, page));
+    }
+
+    // ==================== Lists 相关接口 ====================
+
+    /**
+     * Add a movie or TV series to a user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 向用户自定义列表中添加电影或电视剧。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param listId  The ID of the list.
+     *                列表的 ID。
+     * @param request The request body containing media_type and media_id.
+     *                包含 media_type 和 media_id 的请求体。
+     * @return BaseResponse indicating success or failure.
+     * 表示成功或失败的列表操作响应。
+     * @see <a href="https://developer.themoviedb.org/reference/list-add-movie">API LINK</a>
+     */
+    public BaseResponse addItemToList(int listId, AddItemRequest request) throws TmdbException {
+        return executeSync(listsApi.addItemToList(listId, request));
+    }
+
+    /**
+     * Check if a specific movie or TV series is present in a user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 检查用户自定义列表中是否存在特定的电影或电视剧。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param listId   The ID of the list.
+     *                 列表的 ID。
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param movieId  The ID of the movie to check.
+     *                 要检查的电影 ID。
+     * @return ItemStatusResponse indicating whether the item exists.
+     * 表示项目是否存在的 ItemStatusResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-check-item-status">API LINK</a>
+     */
+    public ItemStatusResponse getItemStatus(int listId, String language, int movieId) throws TmdbException {
+        return executeSync(listsApi.getItemStatus(listId, language, movieId));
+    }
+
+    /**
+     * Clear all items from a user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 清空用户自定义列表中的所有项目。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param listId  The ID of the list.
+     *                列表的 ID。
+     * @param confirm Must be set to true to confirm the clear operation (e.g., "true"), default false.
+     *                必须设置为 true 以确认清空操作（例如 "true"），默认值为false。
+     * @return BaseResponse indicating success or failure.
+     * 表示成功或失败的 BaseResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-clear">API LINK</a>
+     */
+    public BaseResponse clearList(int listId, boolean confirm) throws TmdbException {
+        return executeSync(listsApi.clearList(listId, confirm));
+    }
+
+    /**
+     * Create a new user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 创建新的用户自定义列表。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param request The request body containing name, description, and language.
+     *                包含名称、描述和语言的请求体。
+     * @return CreateListResponse containing the new list ID.
+     * 包含新列表 ID 的 CreateListResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-create">API LINK</a>
+     */
+    public CreateListResponse createList(CreateListRequest request) throws TmdbException {
+        return executeSync(listsApi.createList(request));
     }
 
 
