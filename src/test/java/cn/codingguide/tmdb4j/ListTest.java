@@ -23,7 +23,7 @@ public class ListTest extends BaseTest {
 
     @Test
     public void getItemStatus() {
-        System.out.println(gson.toJson(tmdbClient.getItemStatus(8515015, "en-US", 83533)));
+        System.out.println(gson.toJson(tmdbClient.getItemStatus(8644603, "en-US", 83533)));
     }
 
     @Test
@@ -39,5 +39,16 @@ public class ListTest extends BaseTest {
                 .language("en-US")
                 .build())));
     }
+
+    @Test
+    public void deleteList() {
+        System.out.println(gson.toJson(tmdbClient.deleteList(8644602)));
+    }
+
+    @Test
+    public void getListDetails() {
+        System.out.println(gson.toJson(tmdbClient.getListDetails(8644603, "zh-CN", 1)));
+    }
+
 
 }

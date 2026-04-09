@@ -32,7 +32,7 @@ public interface ChangesApi {
      */
     @GET("movie/changes")
     Call<PagedResults<ChangedMovie>> getMovieChanges(
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("start_date") String startDate,
             @Query("end_date") String endDate
     );
@@ -55,7 +55,7 @@ public interface ChangesApi {
      */
     @GET("person/changes")
     Call<PagedResults<ChangedPerson>> getPersonChanges(
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("start_date") String startDate,
             @Query("end_date") String endDate
     );

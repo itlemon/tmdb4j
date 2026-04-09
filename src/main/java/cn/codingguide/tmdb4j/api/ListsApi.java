@@ -6,8 +6,10 @@ import cn.codingguide.tmdb4j.model.lists.AddItemRequest;
 import cn.codingguide.tmdb4j.model.lists.CreateListRequest;
 import cn.codingguide.tmdb4j.model.lists.CreateListResponse;
 import cn.codingguide.tmdb4j.model.lists.ItemStatusResponse;
+import cn.codingguide.tmdb4j.model.lists.ListDetails;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -102,6 +104,46 @@ public interface ListsApi {
     @POST("list")
     Call<CreateListResponse> createList(
             @Body CreateListRequest request
+    );
+
+    /**
+     * Delete a user-defined list.
+     * Requires a valid session ID (the owner of the list) and a confirm parameter set to true.
+     * <p>
+     * 删除用户自定义列表。
+     * 需要有效的会话 ID（列表所有者）且 confirm 参数必须为 true。
+     *
+     * @param listId The ID of the list.
+     *               列表的 ID。
+     * @return BaseResponse indicating success or failure.
+     * 表示成功或失败的 BaseResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-delete">API LINK</a>
+     */
+    @DELETE("list/{list_id}")
+    Call<BaseResponse> deleteList(
+            @Path("list_id") int listId
+    );
+
+    /**
+     * Get details of a user-defined list by its ID.
+     * Public lists do not require authentication; private lists may require a valid session ID.
+     * <p>
+     * 根据列表 ID 获取用户自定义列表的详情。
+     * 公开列表无需认证；私有列表可能需要有效的会话 ID。
+     *
+     * @param listId   The ID of the list.
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page     The page number (default 1).
+     *                 页码（默认为 1）。
+     * @return ListDetails containing list metadata and paginated items.
+     * @see <a href="https://developer.themoviedb.org/reference/list-details">API LINK</a>
+     */
+    @GET("list/{list_id}")
+    Call<ListDetails> getListDetails(
+            @Path("list_id") int listId,
+            @Query("language") String language,
+            @Query("page") Integer page
     );
 
 }

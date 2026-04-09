@@ -28,8 +28,8 @@ public interface GuestSessionApi {
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
-     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
-     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc", default "created_at.asc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc", 默认 "created_at.asc"）。
      * @return Paginated results of RatedMovie.
      * 分页的 RatedMovie 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-movies">API LINK</a>
@@ -38,7 +38,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedMovie>> getGuestSessionRatedMovies(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -55,8 +55,8 @@ public interface GuestSessionApi {
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
-     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
-     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc", default "created_at.asc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc", 默认 "created_at.asc"）。
      * @return Paginated results of RatedTvSeries.
      * 分页的 RatedTvSeries 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv">API LINK</a>
@@ -65,7 +65,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedTvSeries>> getGuestSessionRatedTv(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -82,8 +82,8 @@ public interface GuestSessionApi {
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
-     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc").
-     *                       排序方式（例如 "created_at.asc", "created_at.desc"）。
+     * @param sortBy         Sort order (e.g., "created_at.asc", "created_at.desc", default "created_at.asc").
+     *                       排序方式（例如 "created_at.asc", "created_at.desc", 默认 "created_at.asc"）。
      * @return Paginated results of RatedTvEpisode.
      * 分页的 RatedTvEpisode 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv-episodes">API LINK</a>
@@ -92,7 +92,7 @@ public interface GuestSessionApi {
     Call<PagedResults<RatedTvEpisode>> getGuestSessionRatedTvEpisodes(
             @Path("guest_session_id") String guestSessionId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 

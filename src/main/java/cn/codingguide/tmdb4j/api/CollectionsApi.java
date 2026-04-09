@@ -23,8 +23,9 @@ public interface CollectionsApi {
      *
      * @param collectionId The unique identifier of the collection.
      *                     合集的唯一标识符。
-     * @param language     The language to localize the results (ISO 639-1, optionally with region, e.g., "zh-CN").
-     *                     结果本地化的语言（ISO 639-1，可选带地区，如 "zh-CN"）。
+     * @param language     The language to localize the results (ISO 639-1, optionally with region, e.g., "zh-CN",
+     *                     default "en-US").
+     *                     结果本地化的语言（ISO 639-1，可选带地区，如 "zh-CN", 默认 "en-US"）。
      * @return Collection details containing metadata and a list of parts.
      * 包含元数据和媒体项列表的合集详情。
      * @see <a href="https://developer.themoviedb.org/reference/collection-details">API LINK</a>

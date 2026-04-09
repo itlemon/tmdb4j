@@ -18,8 +18,8 @@ public interface GenresApi {
      * 获取电影的官方类型列表。
      * 可以通过提供 language 参数进行本地化。
      *
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
      * @return A GenreListResponse containing the list of movie genres.
      * 包含电影类型列表的 GenreListResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/genre-movie-list">API LINK</a>
@@ -34,8 +34,8 @@ public interface GenresApi {
      * 获取电视剧的官方类型列表。
      * 可以通过提供 language 参数进行本地化。
      *
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
      * @return A GenreListResponse containing the list of TV genres.
      * 包含电视剧类型列表的 GenreListResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/genre-tv-list">API LINK</a>

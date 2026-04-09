@@ -21,6 +21,8 @@ public interface CreditsApi {
      *
      * @param creditId The unique identifier of the credit.
      *                 演职员记录的唯一标识符。
+     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
      * @return CreditResponse containing the credit details.
      * 包含演职员详情的 CreditResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/credit-details">API LINK</a>

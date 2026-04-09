@@ -37,12 +37,14 @@ public interface KeywordsApi {
      * 响应为分页格式，包含电影详情。
      * 这个接口过期了，请使用 /discover/movie 接口。
      *
-     * @param keywordId The unique identifier of the keyword.
-     *                  关键词的唯一标识符。
-     * @param language  Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                  可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
-     * @param page      The page number (default 1).
-     *                  页码（默认为 1）。
+     * @param keywordId     The unique identifier of the keyword.
+     *                      关键词的唯一标识符。
+     * @param includeAdults Optional include adults video (default false)
+     *                      可选的 是否包含成人内容
+     * @param language      Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                      可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page          The page number (default 1).
+     *                      页码（默认为 1）。
      * @return Paginated results of movies.
      * 分页的电影结果。
      * @see <a href="https://developer.themoviedb.org/reference/keyword-movies">API LINK</a>
@@ -51,7 +53,8 @@ public interface KeywordsApi {
     @GET("keyword/{keyword_id}/movies")
     Call<PagedResults<Movie>> getKeywordMovies(
             @Path("keyword_id") int keywordId,
+            @Query("include_adult") Boolean includeAdults,
             @Query("language") String language,
-            @Query("page") int page
+            @Query("page") Integer page
     );
 }

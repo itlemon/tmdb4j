@@ -51,7 +51,7 @@ public interface AccountApi {
     Call<PagedResults<Movie>> getFavoriteMovies(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -60,7 +60,7 @@ public interface AccountApi {
     Call<PagedResults<TvSeries>> getFavoriteTvs(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -68,7 +68,7 @@ public interface AccountApi {
     @GET("account/{account_id}/lists")
     Call<PagedResults<CustomList>> getCustomLists(
             @Path("account_id") int accountId,
-            @Query("page") int page
+            @Query("page") Integer page
     );
 
     // https://developer.themoviedb.org/reference/account-rated-movies
@@ -76,7 +76,7 @@ public interface AccountApi {
     Call<PagedResults<RatedMovie>> getRatedMovies(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -85,7 +85,7 @@ public interface AccountApi {
     Call<PagedResults<RatedTvSeries>> getRatedTvSeries(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -94,7 +94,7 @@ public interface AccountApi {
     Call<PagedResults<RatedTvEpisode>> getRatedTvEpisodes(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -103,7 +103,7 @@ public interface AccountApi {
     Call<PagedResults<Movie>> getWatchlistMovies(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
@@ -112,7 +112,7 @@ public interface AccountApi {
     Call<PagedResults<TvSeries>> getWatchlistTvs(
             @Path("account_id") int accountId,
             @Query("language") String language,
-            @Query("page") int page,
+            @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
 
