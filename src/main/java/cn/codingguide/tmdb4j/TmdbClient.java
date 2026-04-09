@@ -66,7 +66,10 @@ import cn.codingguide.tmdb4j.model.lists.CreateListRequest;
 import cn.codingguide.tmdb4j.model.lists.CreateListResponse;
 import cn.codingguide.tmdb4j.model.lists.ItemStatusResponse;
 import cn.codingguide.tmdb4j.model.lists.ListDetails;
+import cn.codingguide.tmdb4j.model.lists.RemoveItemRequest;
 import cn.codingguide.tmdb4j.model.movies.Movie;
+import cn.codingguide.tmdb4j.model.movies.MovieDetails;
+import cn.codingguide.tmdb4j.model.movies.MoviesWithDateRangeResponse;
 import cn.codingguide.tmdb4j.model.movies.RatedMovie;
 import cn.codingguide.tmdb4j.model.tvs.RatedTvEpisode;
 import cn.codingguide.tmdb4j.model.tvs.RatedTvSeries;
@@ -80,7 +83,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 /**
  * 主入口，构建 Retrofit 实例
@@ -104,7 +106,6 @@ public class TmdbClient {
     private final GuestSessionApi guestSessionApi;
     private final KeywordsApi keywordsApi;
     private final ListsApi listsApi;
-
     private final MoviesApi moviesApi;
 
     @Getter
@@ -291,13 +292,13 @@ public class TmdbClient {
         return executeSync(accountApi.addToWatchlist(accountId, request));
     }
 
-    public PagedResults<Movie> getFavoriteMovies(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getFavoriteMovies(accountId, language, page, sortBy == null ? null :
+    public PagedResults<Movie> getFavoriteMovies(int accountId, String languageCode, Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getFavoriteMovies(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
-    public PagedResults<TvSeries> getFavoriteTvs(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getFavoriteTvs(accountId, language, page, sortBy == null ? null :
+    public PagedResults<TvSeries> getFavoriteTvs(int accountId, String languageCode, Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getFavoriteTvs(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
@@ -305,29 +306,30 @@ public class TmdbClient {
         return executeSync(accountApi.getCustomLists(accountId, page));
     }
 
-    public PagedResults<RatedMovie> getRatedMovies(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getRatedMovies(accountId, language, page, sortBy == null ? null :
+    public PagedResults<RatedMovie> getRatedMovies(int accountId, String languageCode, Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getRatedMovies(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
-    public PagedResults<RatedTvSeries> getRatedTvSeries(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getRatedTvSeries(accountId, language, page, sortBy == null ? null :
+    public PagedResults<RatedTvSeries> getRatedTvSeries(int accountId, String languageCode, Integer page,
+                                                        SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getRatedTvSeries(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
-    public PagedResults<RatedTvEpisode> getRatedTvEpisodes(int accountId, String language, Integer page,
+    public PagedResults<RatedTvEpisode> getRatedTvEpisodes(int accountId, String languageCode, Integer page,
                                                            SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getRatedTvEpisodes(accountId, language, page, sortBy == null ? null :
+        return executeSync(accountApi.getRatedTvEpisodes(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
-    public PagedResults<Movie> getWatchlistMovies(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getWatchlistMovies(accountId, language, page, sortBy == null ? null :
+    public PagedResults<Movie> getWatchlistMovies(int accountId, String languageCode, Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getWatchlistMovies(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
-    public PagedResults<TvSeries> getWatchlistTvs(int accountId, String language, Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(accountApi.getWatchlistTvs(accountId, language, page, sortBy == null ? null :
+    public PagedResults<TvSeries> getWatchlistTvs(int accountId, String languageCode, Integer page, SortBy sortBy) throws TmdbException {
+        return executeSync(accountApi.getWatchlistTvs(accountId, languageCode, page, sortBy == null ? null :
                 sortBy.getValue()));
     }
 
@@ -433,7 +435,7 @@ public class TmdbClient {
      *
      * @param collectionId         The unique identifier of the collection.
      *                             合集的唯一标识符。
-     * @param language             Optional language filter (ISO 639-1 code) to limit images to a specific language.
+     * @param languageCode         Optional language filter (ISO 639-1 code) to limit images to a specific language.
      *                             可选的语言过滤器（ISO 639-1 代码），将图片限制为特定语言。
      * @param includeImageLanguage specify a comma separated list of ISO-639-1 values to query, for example: en-US,null
      *                             额外的图片语言列表，多个用逗号分隔
@@ -441,9 +443,9 @@ public class TmdbClient {
      * 包含背景图和海报的合集图片响应。
      * @see <a href="https://developer.themoviedb.org/reference/collection-images">API LINK</a>
      */
-    public CollectionImagesResponse getCollectionImages(int collectionId, String language,
+    public CollectionImagesResponse getCollectionImages(int collectionId, String languageCode,
                                                         String includeImageLanguage) throws TmdbException {
-        return executeSync(collectionsApi.getCollectionImages(collectionId, language, includeImageLanguage));
+        return executeSync(collectionsApi.getCollectionImages(collectionId, languageCode, includeImageLanguage));
     }
 
     /**
@@ -734,7 +736,7 @@ public class TmdbClient {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -744,9 +746,9 @@ public class TmdbClient {
      * 分页的 RatedMovie 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-movies">API LINK</a>
      */
-    public PagedResults<RatedMovie> getGuestSessionRatedMovies(String guestSessionId, String language, Integer page,
+    public PagedResults<RatedMovie> getGuestSessionRatedMovies(String guestSessionId, String languageCode, Integer page,
                                                                SortBy sortBy) throws TmdbException {
-        return executeSync(guestSessionApi.getGuestSessionRatedMovies(guestSessionId, language, page,
+        return executeSync(guestSessionApi.getGuestSessionRatedMovies(guestSessionId, languageCode, page,
                 sortBy == null ? null : sortBy.getValue()));
     }
 
@@ -759,7 +761,7 @@ public class TmdbClient {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -769,9 +771,9 @@ public class TmdbClient {
      * 分页的 RatedTvSeries 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv">API LINK</a>
      */
-    public PagedResults<RatedTvSeries> getGuestSessionRatedTv(String guestSessionId, String language, Integer page,
+    public PagedResults<RatedTvSeries> getGuestSessionRatedTv(String guestSessionId, String languageCode, Integer page,
                                                               SortBy sortBy) throws TmdbException {
-        return executeSync(guestSessionApi.getGuestSessionRatedTv(guestSessionId, language, page, sortBy == null ?
+        return executeSync(guestSessionApi.getGuestSessionRatedTv(guestSessionId, languageCode, page, sortBy == null ?
                 null : sortBy.getValue()));
     }
 
@@ -784,7 +786,7 @@ public class TmdbClient {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -794,9 +796,9 @@ public class TmdbClient {
      * 分页的 RatedTvEpisode 结果。
      * @see <a href="https://developer.themoviedb.org/reference/guest-session-rated-tv-episodes">API LINK</a>
      */
-    public PagedResults<RatedTvEpisode> getGuestSessionRatedTvEpisodes(String guestSessionId, String language,
+    public PagedResults<RatedTvEpisode> getGuestSessionRatedTvEpisodes(String guestSessionId, String languageCode,
                                                                        Integer page, SortBy sortBy) throws TmdbException {
-        return executeSync(guestSessionApi.getGuestSessionRatedTvEpisodes(guestSessionId, language, page,
+        return executeSync(guestSessionApi.getGuestSessionRatedTvEpisodes(guestSessionId, languageCode, page,
                 sortBy == null ? null : sortBy.getValue()));
     }
 
@@ -830,7 +832,7 @@ public class TmdbClient {
      *                      关键词的唯一标识符。
      * @param includeAdults Optional include adults video (default false)
      *                      可选的 是否包含成人内容
-     * @param language      Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode  Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                      可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page          The page number (default 1).
      *                      页码（默认为 1）。
@@ -840,8 +842,8 @@ public class TmdbClient {
      */
     @Deprecated
     public PagedResults<Movie> getKeywordMovies(int keywordId, Boolean includeAdults,
-                                                String language, Integer page) throws TmdbException {
-        return executeSync(keywordsApi.getKeywordMovies(keywordId, includeAdults, language, page));
+                                                String languageCode, Integer page) throws TmdbException {
+        return executeSync(keywordsApi.getKeywordMovies(keywordId, includeAdults, languageCode, page));
     }
 
     // ==================== Lists 相关接口 ====================
@@ -872,18 +874,18 @@ public class TmdbClient {
      * 检查用户自定义列表中是否存在特定的电影或电视剧。
      * 需要有效的会话 ID（通过用户认证或游客会话）。
      *
-     * @param listId   The ID of the list.
-     *                 列表的 ID。
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
-     * @param movieId  The ID of the movie to check.
-     *                 要检查的电影 ID。
+     * @param listId       The ID of the list.
+     *                     列表的 ID。
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param movieId      The ID of the movie to check.
+     *                     要检查的电影 ID。
      * @return ItemStatusResponse indicating whether the item exists.
      * 表示项目是否存在的 ItemStatusResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/list-check-item-status">API LINK</a>
      */
-    public ItemStatusResponse getItemStatus(int listId, String language, int movieId) throws TmdbException {
-        return executeSync(listsApi.getItemStatus(listId, language, movieId));
+    public ItemStatusResponse getItemStatus(int listId, String languageCode, int movieId) throws TmdbException {
+        return executeSync(listsApi.getItemStatus(listId, languageCode, movieId));
     }
 
     /**
@@ -946,22 +948,142 @@ public class TmdbClient {
      * 根据列表 ID 获取用户自定义列表的详情。
      * 公开列表无需认证；私有列表可能需要有效的会话 ID。
      *
-     * @param listId   The ID of the list.
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
-     * @param page     The page number (default 1).
-     *                 页码（默认为 1）。
+     * @param listId       The ID of the list.
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page         The page number (default 1).
+     *                     页码（默认为 1）。
      * @return ListDetails containing list metadata and paginated items.
      * @see <a href="https://developer.themoviedb.org/reference/list-details">API LINK</a>
      */
-    @GET("list/{list_id}")
-    public ListDetails getListDetails(int listId, String language, Integer page) throws TmdbException {
-        return executeSync(listsApi.getListDetails(listId, language, page));
+    public ListDetails getListDetails(int listId, String languageCode, Integer page) throws TmdbException {
+        return executeSync(listsApi.getListDetails(listId, languageCode, page));
     }
 
+    /**
+     * Remove a movie or TV series from a user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 从用户自定义列表中移除电影或电视剧。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param listId  The ID of the list.
+     *                列表的 ID。
+     * @param request The request body containing media_type and media_id.
+     *                包含 media_type 和 media_id 的请求体。
+     * @return BaseResponse indicating success or failure.
+     * 表示成功或失败的 BaseResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-remove-movie">API LINK</a>
+     */
+    public BaseResponse removeItemFromList(int listId, RemoveItemRequest request) throws TmdbException {
+        return executeSync(listsApi.removeItemFromList(listId, request));
+    }
 
-    public Movie getMovieDetails(int movieId) throws TmdbException {
-        return executeSync(moviesApi.getDetails(movieId));
+    // ==================== Movies 相关接口 ====================
+
+    /**
+     * Get the list of movies currently playing in theaters.
+     * Results are paginated and localized based on the provided language and region.
+     * <p>
+     * 获取当前正在影院上映的电影列表。
+     * 结果基于提供的语言和地区进行分页和本地化。
+     *
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
+     * @param page         Optional page number (default 1).
+     *                     可选的页码（默认为 1）。
+     * @param countryCode  Optional ISO 3166-1 country code for regional release dates.
+     *                     可选的 ISO 3166-1 国家代码，用于区域性上映日期。
+     * @return NowPlayingMoviesResponse containing date range and movies.
+     * 包含日期范围和电影的 NowPlayingMoviesResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/movie-now-playing-list">API LINK</a>
+     */
+    public MoviesWithDateRangeResponse getNowPlaying(String languageCode, Integer page, String countryCode) throws TmdbException {
+        return executeSync(moviesApi.getNowPlaying(languageCode, page, countryCode));
+    }
+
+    /**
+     * Get the list of upcoming movies (releasing in the near future).
+     * Results are paginated and localized based on the provided language and region.
+     * <p>
+     * 获取即将上映的电影列表（近期将上映）。
+     * 结果基于提供的语言和地区进行分页和本地化。
+     *
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
+     * @param page         Optional page number (default 1).
+     *                     可选的页码（默认为 1）。
+     * @param countryCode  Optional ISO 3166-1 country code for regional release dates.
+     *                     可选的 ISO 3166-1 国家代码，用于区域性上映日期。
+     * @return MoviesWithDateRangeResponse containing date range and movies.
+     * 包含日期范围和电影的 MoviesWithDateRangeResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/movie-upcoming-list">API LINK</a>
+     */
+    public MoviesWithDateRangeResponse getUpcoming(String languageCode, Integer page, String countryCode) throws TmdbException {
+        return executeSync(moviesApi.getUpcoming(languageCode, page, countryCode));
+    }
+
+    /**
+     * Get the list of popular movies.
+     * Results are paginated and localized based on the provided language and region.
+     * <p>
+     * 获取热门电影列表。
+     * 结果基于提供的语言和地区进行分页和本地化。
+     *
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
+     * @param page         Optional page number (default 1).
+     *                     可选的页码（默认为 1）。
+     * @param countryCode  Optional ISO 3166-1 country code for regional release dates.
+     *                     可选的 ISO 3166-1 国家代码，用于区域性上映日期。
+     * @return Paginated results of popular movies.
+     * 热门电影的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/movie-popular-list">API LINK</a>
+     */
+    public PagedResults<Movie> getPopularMovies(String languageCode, Integer page, String countryCode) throws TmdbException {
+        return executeSync(moviesApi.getPopularMovies(languageCode, page, countryCode));
+    }
+
+    /**
+     * Get the list of top-rated movies.
+     * Results are paginated and localized based on the provided language and region.
+     * <p>
+     * 获取评分最高的电影列表。
+     * 结果基于提供的语言和地区进行分页和本地化。
+     *
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
+     * @param page         Optional page number (default 1).
+     *                     可选的页码（默认为 1）。
+     * @param countryCode  Optional ISO 3166-1 country code for regional release dates.
+     *                     可选的 ISO 3166-1 国家代码，用于区域性上映日期。
+     * @return Paginated results of top-rated movies.
+     * 评分最高电影的分页结果。
+     * @see <a href="https://developer.themoviedb.org/reference/movie-top-rated-list">API LINK</a>
+     */
+    public PagedResults<Movie> getTopRatedMovies(String languageCode, Integer page, String countryCode) throws TmdbException {
+        return executeSync(moviesApi.getTopRatedMovies(languageCode, page, countryCode));
+    }
+
+    /**
+     * Get the detailed information of a specific movie.
+     * Use append_to_response to include additional data (e.g., "credits,images").
+     * <p>
+     * 获取特定电影的详细信息。
+     * 使用 append_to_response 可以包含附加数据（例如 "credits,images"）。
+     *
+     * @param movieId          The unique identifier of the movie.
+     *                         电影的唯一标识符。
+     * @param appendToResponse Optional comma-separated list of extra data to append (e.g., "credits,images").
+     *                         可选的附加数据列表，多个用逗号分隔（例如 "credits,images"）。
+     * @param languageCode     Optional ISO 639-1 language code (e.g., "en-US", "zh-CN", default "en-US").
+     *                         可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN", 默认 "en-US"）。
+     * @return MovieDetails object containing full movie information.
+     * 包含完整电影信息的 MovieDetails 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/movie-details">API LINK</a>
+     */
+    public MovieDetails getMovieDetails(int movieId, String appendToResponse, String languageCode) throws TmdbException {
+        return executeSync(moviesApi.getMovieDetails(movieId, appendToResponse, languageCode));
     }
 
 

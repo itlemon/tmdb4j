@@ -41,7 +41,7 @@ public interface KeywordsApi {
      *                      关键词的唯一标识符。
      * @param includeAdults Optional include adults video (default false)
      *                      可选的 是否包含成人内容
-     * @param language      Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode  Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                      可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page          The page number (default 1).
      *                      页码（默认为 1）。
@@ -54,7 +54,7 @@ public interface KeywordsApi {
     Call<PagedResults<Movie>> getKeywordMovies(
             @Path("keyword_id") int keywordId,
             @Query("include_adult") Boolean includeAdults,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page
     );
 }

@@ -50,7 +50,7 @@ public interface AccountApi {
     @GET("account/{account_id}/favorite/movies")
     Call<PagedResults<Movie>> getFavoriteMovies(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -59,7 +59,7 @@ public interface AccountApi {
     @GET("account/{account_id}/favorite/tv")
     Call<PagedResults<TvSeries>> getFavoriteTvs(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -75,7 +75,7 @@ public interface AccountApi {
     @GET("account/{account_id}/rated/movies")
     Call<PagedResults<RatedMovie>> getRatedMovies(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -84,7 +84,7 @@ public interface AccountApi {
     @GET("account/{account_id}/rated/tv")
     Call<PagedResults<RatedTvSeries>> getRatedTvSeries(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -93,7 +93,7 @@ public interface AccountApi {
     @GET("account/{account_id}/rated/tv/episodes")
     Call<PagedResults<RatedTvEpisode>> getRatedTvEpisodes(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -102,7 +102,7 @@ public interface AccountApi {
     @GET("account/{account_id}/watchlist/movies")
     Call<PagedResults<Movie>> getWatchlistMovies(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -111,7 +111,7 @@ public interface AccountApi {
     @GET("account/{account_id}/watchlist/tv")
     Call<PagedResults<TvSeries>> getWatchlistTvs(
             @Path("account_id") int accountId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );

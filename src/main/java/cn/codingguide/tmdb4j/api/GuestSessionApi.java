@@ -24,7 +24,7 @@ public interface GuestSessionApi {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -37,7 +37,7 @@ public interface GuestSessionApi {
     @GET("guest_session/{guest_session_id}/rated/movies")
     Call<PagedResults<RatedMovie>> getGuestSessionRatedMovies(
             @Path("guest_session_id") String guestSessionId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -51,7 +51,7 @@ public interface GuestSessionApi {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -64,7 +64,7 @@ public interface GuestSessionApi {
     @GET("guest_session/{guest_session_id}/rated/tv")
     Call<PagedResults<RatedTvSeries>> getGuestSessionRatedTv(
             @Path("guest_session_id") String guestSessionId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );
@@ -78,7 +78,7 @@ public interface GuestSessionApi {
      *
      * @param guestSessionId The guest session ID.
      *                       游客会话 ID。
-     * @param language       Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     * @param languageCode   Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
      *                       可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
      * @param page           The page number (default 1).
      *                       页码（默认为 1）。
@@ -91,7 +91,7 @@ public interface GuestSessionApi {
     @GET("guest_session/{guest_session_id}/rated/tv/episodes")
     Call<PagedResults<RatedTvEpisode>> getGuestSessionRatedTvEpisodes(
             @Path("guest_session_id") String guestSessionId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page,
             @Query("sort_by") String sortBy
     );

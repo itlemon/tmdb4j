@@ -29,7 +29,7 @@ public class ListDetails {
     private String createdBy;
 
     /**
-     * The description of the list (may be null or empty).
+     * The description of the list (maybe null or empty).
      * 列表的描述（可能为 null 或空字符串）。
      */
     private String description;

@@ -3,6 +3,7 @@ package cn.codingguide.tmdb4j;
 import cn.codingguide.tmdb4j.constants.MediaType;
 import cn.codingguide.tmdb4j.model.lists.AddItemRequest;
 import cn.codingguide.tmdb4j.model.lists.CreateListRequest;
+import cn.codingguide.tmdb4j.model.lists.RemoveItemRequest;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,5 +51,12 @@ public class ListTest extends BaseTest {
         System.out.println(gson.toJson(tmdbClient.getListDetails(8644603, "zh-CN", 1)));
     }
 
+    @Test
+    public void removeItemFromList() {
+        System.out.println(gson.toJson(tmdbClient.removeItemFromList(8644603, RemoveItemRequest.builder()
+                .mediaId(76479)
+                .mediaType(MediaType.tv)
+                .build())));
+    }
 
 }

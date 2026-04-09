@@ -45,7 +45,7 @@ public interface CollectionsApi {
      *
      * @param collectionId         The unique identifier of the collection.
      *                             合集的唯一标识符。
-     * @param language             Optional language filter (ISO 639-1 code) to limit images to a specific language.
+     * @param languageCode         Optional language filter (ISO 639-1 code) to limit images to a specific language.
      *                             可选的语言过滤器（ISO 639-1 代码），将图片限制为特定语言。
      * @param includeImageLanguage specify a comma separated list of ISO-639-1 values to query, for example: en-US,null
      *                             额外的图片语言列表，多个用逗号分隔
@@ -56,7 +56,7 @@ public interface CollectionsApi {
     @GET("collection/{collection_id}/images")
     Call<CollectionImagesResponse> getCollectionImages(
             @Path("collection_id") int collectionId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("include_image_language") String includeImageLanguage
     );
 

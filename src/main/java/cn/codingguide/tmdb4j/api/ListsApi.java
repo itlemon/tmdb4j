@@ -7,6 +7,7 @@ import cn.codingguide.tmdb4j.model.lists.CreateListRequest;
 import cn.codingguide.tmdb4j.model.lists.CreateListResponse;
 import cn.codingguide.tmdb4j.model.lists.ItemStatusResponse;
 import cn.codingguide.tmdb4j.model.lists.ListDetails;
+import cn.codingguide.tmdb4j.model.lists.RemoveItemRequest;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -19,7 +20,6 @@ import retrofit2.http.Query;
  * @author itlemon {@literal <itlemon@petalmail.com>}
  * Created on 2026-04-07
  */
-@RequiresSession
 public interface ListsApi {
 
     /**
@@ -37,6 +37,7 @@ public interface ListsApi {
      * 表示成功或失败的列表操作响应。
      * @see <a href="https://developer.themoviedb.org/reference/list-add-movie">API LINK</a>
      */
+    @RequiresSession
     @POST("list/{list_id}/add_item")
     Call<BaseResponse> addItemToList(
             @Path("list_id") int listId,
@@ -50,12 +51,12 @@ public interface ListsApi {
      * 检查用户自定义列表中是否存在特定的电影或电视剧。
      * 需要有效的会话 ID（通过用户认证或游客会话）。
      *
-     * @param listId   The ID of the list.
-     *                 列表的 ID。
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
-     * @param movieId  The ID of the movie to check.
-     *                 要检查的电影 ID。
+     * @param listId       The ID of the list.
+     *                     列表的 ID。
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param movieId      The ID of the movie to check.
+     *                     要检查的电影 ID。
      * @return ItemStatusResponse indicating whether the item exists.
      * 表示项目是否存在的 ItemStatusResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/list-check-item-status">API LINK</a>
@@ -63,7 +64,7 @@ public interface ListsApi {
     @GET("list/{list_id}/item_status")
     Call<ItemStatusResponse> getItemStatus(
             @Path("list_id") int listId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("movie_id") int movieId
     );
 
@@ -82,6 +83,7 @@ public interface ListsApi {
      * 表示成功或失败的 BaseResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/list-clear">API LINK</a>
      */
+    @RequiresSession
     @POST("list/{list_id}/clear")
     Call<BaseResponse> clearList(
             @Path("list_id") int listId,
@@ -101,6 +103,7 @@ public interface ListsApi {
      * 包含新列表 ID 的 CreateListResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/list-create">API LINK</a>
      */
+    @RequiresSession
     @POST("list")
     Call<CreateListResponse> createList(
             @Body CreateListRequest request
@@ -119,6 +122,7 @@ public interface ListsApi {
      * 表示成功或失败的 BaseResponse 对象。
      * @see <a href="https://developer.themoviedb.org/reference/list-delete">API LINK</a>
      */
+    @RequiresSession
     @DELETE("list/{list_id}")
     Call<BaseResponse> deleteList(
             @Path("list_id") int listId
@@ -131,19 +135,41 @@ public interface ListsApi {
      * 根据列表 ID 获取用户自定义列表的详情。
      * 公开列表无需认证；私有列表可能需要有效的会话 ID。
      *
-     * @param listId   The ID of the list.
-     * @param language Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
-     *                 可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
-     * @param page     The page number (default 1).
-     *                 页码（默认为 1）。
+     * @param listId       The ID of the list.
+     * @param languageCode Optional ISO 639-1 language code (e.g., "en-US", "zh-CN").
+     *                     可选的 ISO 639-1 语言代码（例如 "en-US", "zh-CN"）。
+     * @param page         The page number (default 1).
+     *                     页码（默认为 1）。
      * @return ListDetails containing list metadata and paginated items.
      * @see <a href="https://developer.themoviedb.org/reference/list-details">API LINK</a>
      */
     @GET("list/{list_id}")
     Call<ListDetails> getListDetails(
             @Path("list_id") int listId,
-            @Query("language") String language,
+            @Query("language") String languageCode,
             @Query("page") Integer page
+    );
+
+    /**
+     * Remove a movie or TV series from a user-defined list.
+     * Requires a valid session ID (via authentication or guest session).
+     * <p>
+     * 从用户自定义列表中移除电影或电视剧。
+     * 需要有效的会话 ID（通过用户认证或游客会话）。
+     *
+     * @param listId  The ID of the list.
+     *                列表的 ID。
+     * @param request The request body containing media_type and media_id.
+     *                包含 media_type 和 media_id 的请求体。
+     * @return BaseResponse indicating success or failure.
+     * 表示成功或失败的 BaseResponse 对象。
+     * @see <a href="https://developer.themoviedb.org/reference/list-remove-movie">API LINK</a>
+     */
+    @RequiresSession
+    @POST("list/{list_id}/remove_item")
+    Call<BaseResponse> removeItemFromList(
+            @Path("list_id") int listId,
+            @Body RemoveItemRequest request
     );
 
 }
